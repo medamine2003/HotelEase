@@ -1,0 +1,35 @@
+# Node / React - dossier client
+client/node_modules/
+client/dist/
+client/.vite/
+client/.next/
+client/.turbo/
+client/.parcel-cache/
+client/build/
+client/.env*
+client/yarn.lock
+client/package-lock.json
+
+# Symfony - dossier store
+
+store/.env.local
+store/.env.local.php
+store/.env.*.local
+store/config/secrets/prod/prod.decrypt.private.php
+store/public/bundles/
+store/var/
+store/vendor/
+
+
+# Mac / Linux / Windows system files
+.DS_Store
+Thumbs.db
+
+# Logs & autres fichiers temporaires
+*.log
+*.lock
+
+
+# JetBrains / VSCode IDE
+.idea/
+.vscode/
