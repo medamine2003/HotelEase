@@ -1,0 +1,35 @@
+# Node / React - dossier front-end
+front-end/node_modules/
+front-end/dist/
+front-end/.vite/
+front-end/.next/
+front-end/.turbo/
+front-end/.parcel-cache/
+front-end/build/
+front-end/.env*
+front-end/yarn.lock
+front-end/package-lock.json
+
+# Symfony - dossier back-end
+
+back-end/.env.local
+back-end/.env.local.php
+back-end/.env.*.local
+back-end/config/secrets/prod/prod.decrypt.private.php
+back-end/public/bundles/
+back-end/var/
+back-end/vendor/
+
+
+# Mac / Linux / Windows system files
+.DS_Store
+Thumbs.db
+
+# Logs & autres fichiers temporaires
+*.log
+*.lock
+
+
+# JetBrains / VSCode IDE
+.idea/
+.vscode/
