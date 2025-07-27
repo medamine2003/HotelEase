@@ -1,13 +1,14 @@
 import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import ServiceList from '../components/Services/ServicesList'
-import NavigationBar from "../components/Layout/NavigationBar"
+import NavigationBar from "../components/CommonComponents/NavigationBar"
 
 function Services() {
   return (
-    <>
+    
+    <div className="container-fluid "> 
       <NavigationBar/>
-      <div className="container mt-3"> 
+      
         <div className="d-flex justify-content-between align-items-center mb-3">
             <h1>Services</h1>
             <Link to="/services/create">
@@ -17,7 +18,7 @@ function Services() {
 
         <ServiceList />
       </div> 
-    </>
+   
   );
 }
 

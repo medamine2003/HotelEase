@@ -1,11 +1,11 @@
-import axios from 'axios';
-
-const API_URL = 'http://localhost:8000/api/services';
+//import axios from 'axios';
+import api from './api';
+//const API_URL = 'http://localhost:8000/api/services';
 
 // Créer un service
 export const createService = async (service) => {
   console.log("Données envoyées à l'API :", service);
-  const response = await axios.post(API_URL, service, {
+  const response = await api.post('/services', service, {
     headers: {
       'Content-Type': 'application/ld+json',
       'Accept': 'application/ld+json',
@@ -18,7 +18,7 @@ export const createService = async (service) => {
 // Récupérer tous les services
 export const getServices = async (params = {}) => {
   try {
-    const response = await axios.get(API_URL, {
+    const response = await api.get('/services', {
       params,
       headers: {
         'Accept': 'application/ld+json',
@@ -34,7 +34,7 @@ export const getServices = async (params = {}) => {
 // Récupérer un service par ID
 export const getServiceById = async (id) => {
   try {
-    const response = await axios.get(`${API_URL}/${id}`, {
+    const response = await api.get(`/services/${id}`, {
       headers: {
         'Accept': 'application/ld+json',
       }
@@ -48,7 +48,7 @@ export const getServiceById = async (id) => {
 
 // Mettre à jour un service
 export const updateService = async (id, updatedService) => {
-  return axios.patch(`${API_URL}/${id}`, updatedService, {
+  return api.patch(`/services/${id}`, updatedService, {
     headers: {
       'Content-Type': 'application/merge-patch+json',
       'Accept': 'application/ld+json',
@@ -58,7 +58,7 @@ export const updateService = async (id, updatedService) => {
 
 // Supprimer un service
 export const deleteService = async (id) => {
-  return axios.delete(`${API_URL}/${id}`, {
+  return api.delete(`/services/${id}`, {
     headers: {
       'Accept': 'application/json',
     },

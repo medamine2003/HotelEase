@@ -1,0 +1,18 @@
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Ou pour être plus global */
+* {
+  font-family: 'Roboto', sans-serif;
+}
+.navbar .nav-link svg {
+  color: #3b82f6; /* Couleur unique pour toutes les icônes */
+}
+
+/* Ou avec hover */
+.navbar .nav-link:hover svg {
+  color: rgb(167, 104, 9);
+}

@@ -1,9 +1,9 @@
-import NavigationBar from "../components/Layout/NavigationBar"
+import Dashboard from "../components/Dashboard"
 
-function Dashboard() {
+function DashboardPage() {
   return (
-    <NavigationBar/>
+    <Dashboard/>
   )
 }
 
-export default Dashboard
+export default DashboardPage

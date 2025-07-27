@@ -10,9 +10,7 @@ services:
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.
         autoconfigure: true # Automatically registers your services as commands, event subscribers, etc.
-
-    # makes classes in src/ available to be used as services
-    # this creates a service per class whose id is the fully-qualified class name
+    
     App\:
         resource: '../src/'
         exclude:
@@ -22,3 +20,83 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+    
+    # Storage pour Rate Limiter
+    rate_limiter.cache_storage:
+        class: Symfony\Component\RateLimiter\Storage\CacheStorage
+        arguments:
+            - '@cache.app'
+    
+    # ===== RATE LIMITERS =====
+    
+    # Rate Limiter pour les tentatives de login (anti brute-force)
+    rate_limiter.login_attempts:
+        class: Symfony\Component\RateLimiter\RateLimiterFactory
+        arguments:
+            - # Configuration array
+                id: 'login_attempts'
+                policy: 'sliding_window'    # Fenêtre glissante = plus précis
+                limit: 7                    # 5 tentatives max
+                interval: '15 minutes'      # sur 15 minutes
+            - '@rate_limiter.cache_storage'
+            
+    # Rate Limiter global pour l'API (protection générale)
+    rate_limiter.api_global:
+        class: Symfony\Component\RateLimiter\RateLimiterFactory
+        arguments:
+            - # Configuration array
+                id: 'api_global'
+                policy: 'token_bucket'      # Token bucket = plus souple pour usage normal
+                limit: 200                  # 200 requêtes par heure (augmenté)
+                interval: '1 hour'
+            - '@rate_limiter.cache_storage'
+            
+    # Rate Limiter pour refresh token (éviter abus)
+    rate_limiter.token_refresh:
+        class: Symfony\Component\RateLimiter\RateLimiterFactory
+        arguments:
+            - # Configuration array
+                id: 'token_refresh'
+                policy: 'sliding_window'
+                limit: 20                   # 20 refresh max (augmenté)
+                interval: '5 minutes'       # sur 5 minutes
+            - '@rate_limiter.cache_storage'
+            
+    # Rate Limiter pour endpoints admin (protection renforcée)
+    rate_limiter.admin_endpoints:
+        class: Symfony\Component\RateLimiter\RateLimiterFactory
+        arguments:
+            - # Configuration array
+                id: 'admin_endpoints'
+                policy: 'sliding_window'
+                limit: 50                   # 50 requêtes admin max (augmenté)
+                interval: '10 minutes'      # sur 10 minutes
+            - '@rate_limiter.cache_storage'
+    
+    # ===== EVENT LISTENER =====
+    
+    # Configuration de l'EventListener de sécurité
+    App\EventListener\SecurityRateLimitListener:
+        arguments:
+            $loginAttemptsLimiter: '@rate_limiter.login_attempts'
+            $apiGlobalLimiter: '@rate_limiter.api_global'
+            $tokenRefreshLimiter: '@rate_limiter.token_refresh'
+            $adminEndpointsLimiter: '@rate_limiter.admin_endpoints'
+        tags:
+            # Priorité élevée pour intercepter tôt les requêtes suspectes
+            - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest, priority: 15 }
+            - { name: kernel.event_listener, event: kernel.response, method: onKernelResponse, priority: 10 }
+    # ===== ACTIVITY LISTENER =====
+    
+    # Configuration de l'ActivityListener pour traçabilité
+      
+    App\EventListener\ActivityListener:
+        arguments:
+            $security: '@Symfony\Bundle\SecurityBundle\Security'
+        tags:
+            - { name: doctrine.event_listener, event: onFlush, method: onFlush }
+        public: false
+    ApiPlatform\State\ProcessorInterface: '@api_platform.doctrine.orm.state.persist_processor'    
+    App\EventListener\ApiMoneyFixListener:
+        tags:
+            - { name: kernel.event_subscriber }

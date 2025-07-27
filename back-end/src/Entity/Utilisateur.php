@@ -27,7 +27,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
         new Post(processor: UtilisateurProcessor::class),
         new Put(processor: UtilisateurProcessor::class),
         new Patch(processor: UtilisateurProcessor::class),
-        new Delete()
+        new Delete(processor: UtilisateurProcessor::class) // ← Correction ici
     ],
     normalizationContext: ['groups' => ['user:read']],
     denormalizationContext: ['groups' => ['user:write']]
@@ -64,7 +64,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 50)]
     #[Groups(['user:read', 'user:write'])]
     #[Assert\NotBlank]
-    #[Assert\Choice(choices: ['ROLE_ADMIN', 'ROLE_USER'])]
+    #[Assert\Choice(choices: ['ROLE_ADMIN', 'ROLE_RECEPTIONNISTE'])]
     private ?string $role = null;
 
     /**
@@ -165,8 +165,6 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    // ✅ Méthodes exigées par Symfony
-
     public function getPassword(): ?string
     {
         return $this->motDePasse;
@@ -179,7 +177,13 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getRoles(): array
     {
-        return [$this->role];
+        $roles = ['ROLE_USER']; 
+        
+        if ($this->role) {
+            $roles[] = $this->role;
+        }
+        
+        return array_unique($roles);
     }
 
     public function eraseCredentials(): void

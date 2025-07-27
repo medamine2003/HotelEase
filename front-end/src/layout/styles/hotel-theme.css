@@ -1,0 +1,167 @@
+/* ========================= */
+/* Palette personnalisée     */
+/* ========================= */
+:root {
+  --hotel-primary: #1e3a5f;
+  --hotel-secondary: #4a90c2;
+  --hotel-light: #f8f9fa;
+  --hotel-text-secondary: #6c757d;
+  --hotel-success: #28a745;
+  --hotel-warning: #ffc107;
+  --hotel-danger: #dc3545;
+  --hotel-info: #17a2b8;
+}
+
+/* Override Bootstrap */
+:root {
+  --bs-primary: #4a90c2;
+  --bs-primary-rgb: 74, 144, 194;
+  --bs-dark: #1e3a5f;
+  --bs-light: #f8f9fa;
+}
+
+/* ========================= */
+/* En-têtes                  */
+/* ========================= */
+.header-hotel {
+  background: linear-gradient(135deg, var(--hotel-primary) 0%, var(--hotel-secondary) 100%);
+  color: white;
+  padding: 2rem 0;
+  margin-bottom: 2rem;
+  border-radius: 0.5rem;
+}
+
+/* ========================= */
+/* Table personnalisée       */
+/* ========================= */
+.table-hotel {
+  background-color: #a40b0b;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
+  margin-bottom: 2rem;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.table-hotel thead {
+  background-color: var(--hotel-primary);
+  color: rgb(237, 15, 15);
+  font-weight: 600;
+}
+
+.table-hotel th,
+.table-hotel td {
+  padding: 1rem;
+  vertical-align: middle;
+  border-top: 1px solid #1a69b9;
+}
+
+.table-hotel tbody tr:hover {
+  background-color: #f1f5f3;
+  transition: background-color 0.2s ease;
+}
+
+.table-hotel tbody tr:first-child td {
+  border-top: none;
+}
+
+/* ========================= */
+/* Boutons personnalisés     */
+/* ========================= */
+.btn-hotel-primary {
+  background-color: var(--hotel-secondary);
+  border-color: var(--hotel-secondary);
+  color: white;
+}
+
+.btn-hotel-primary:hover {
+  background-color: var(--hotel-primary);
+  border-color: var(--hotel-primary);
+}
+
+.btn-hotel-primary:focus {
+  box-shadow: 0 0 0 0.25rem rgba(74, 144, 194, 0.25);
+}
+
+/* Boutons outline */
+.btn-outline-hotel-primary {
+  border-color: var(--hotel-secondary);
+  color: var(--hotel-secondary);
+}
+
+.btn-outline-hotel-primary:hover {
+  background-color: var(--hotel-secondary);
+  border-color: var(--hotel-secondary);
+  color: white;
+}
+
+/* ========================= */
+/* Modales                   */
+/* ========================= */
+.modal-header-hotel {
+  background-color: var(--hotel-primary);
+  color: white;
+}
+
+.modal-header-hotel .btn-close {
+  filter: invert(1);
+}
+
+/* ========================= */
+/* Cards                     */
+/* ========================= */
+.card-hotel {
+  background-color: var(--hotel-light);
+  border: 1px solid #e9ecef;
+  border-radius: 0.5rem;
+}
+
+/* ========================= */
+/* Textes                    */
+/* ========================= */
+.text-hotel-primary { 
+  color: var(--hotel-primary) !important; 
+}
+
+.text-hotel-secondary { 
+  color: var(--hotel-text-secondary) !important; 
+}
+
+/* ========================= */
+/* Spinners                  */
+/* ========================= */
+.spinner-hotel {
+  color: var(--hotel-secondary);
+}
+
+/* ========================= */
+/* Badges                    */
+/* ========================= */
+.badge-hotel-primary {
+  background-color: var(--hotel-secondary) !important;
+}
+
+.badge-hotel-secondary {
+  background-color: var(--hotel-text-secondary) !important;
+}
+
+/* ========================= */
+/* Divers                    */
+/* ========================= */
+.fw-medium {
+  font-weight: 500;
+}
+
+/* ========================= */
+/* Responsive                */
+/* ========================= */
+@media (max-width: 768px) {
+  .header-hotel {
+    padding: 1.5rem 0;
+  }
+
+  .header-hotel h1 {
+    font-size: 1.5rem;
+  }
+}

@@ -1,11 +1,9 @@
-import axios from 'axios';
-
-const API_URL = 'http://localhost:8000/api/clients';
-
+import api from './api';
+//const API_URL = 'http://localhost:8000/api/clients';
 
 export const createCustomer = async (customer) => {
   console.log(" Données envoyées à l'API :", customer);
-  const response = await axios.post(API_URL, customer, {
+  const response = await api.post('/clients', customer, {
     headers: {
       'Content-Type': 'application/ld+json',
       'Accept': 'application/ld+json',
@@ -15,16 +13,15 @@ export const createCustomer = async (customer) => {
   return response.data;
 };
 
-
 export const getCustomers = async (params = {}) => {
   try {
-    const response = await axios.get(API_URL, {
+    const response = await api.get('/clients', {
       params,
       headers: {
         'Accept': 'application/ld+json',
       }
     });
-    return response.data['hydra:member'] || response.data;
+    return response.data.member || []; // ← CORRIGÉ : forcé array vide
   } catch (error) {
     console.error('Erreur lors de la récupération des clients:', error);
     throw error;
@@ -34,7 +31,7 @@ export const getCustomers = async (params = {}) => {
 // Lire un client par ID
 export const getCustomerById = async (id) => {
   try {
-    const response = await axios.get(`${API_URL}/${id}`, {
+    const response = await api.get(`/clients/${id}`, {
       headers: {
         'Accept': 'application/ld+json',
       }
@@ -48,7 +45,7 @@ export const getCustomerById = async (id) => {
 
 // Mettre à jour un client
 export const updateCustomer = async (id, updatedCustomer) => {
-  return axios.patch(`${API_URL}/${id}`, updatedCustomer, {
+  return api.patch(`/clients/${id}`, updatedCustomer, {
     headers: {
       'Content-Type': 'application/merge-patch+json',
       'Accept': 'application/ld+json',
@@ -58,7 +55,7 @@ export const updateCustomer = async (id, updatedCustomer) => {
 
 // Supprimer un client
 export const deleteCustomer = async (id) => {
-  return axios.delete(`${API_URL}/${id}`, {
+  return api.delete(`/clients/${id}`, {
     headers: {
       'Accept': 'application/json',
     },

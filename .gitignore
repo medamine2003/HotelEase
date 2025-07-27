@@ -19,6 +19,9 @@ back-end/config/secrets/prod/prod.decrypt.private.php
 back-end/public/bundles/
 back-end/var/
 back-end/vendor/
+###> lexik/jwt-authentication-bundle ###
+back-end/config/jwt/*.pem
+###< lexik/jwt-authentication-bundle ###
 
 
 # Mac / Linux / Windows system files
