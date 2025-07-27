@@ -1,59 +1,77 @@
 # Hotel Management System / Système de Gestion Hôtelière
-**English**
+**English:**
 HotelEase is a complete management solution featuring:
--Room, Customer and reservation management
--Payment processing
--Service management
--JWT (json web token) authentifcation
--Responsive pages
--Dynamic dashboard
-**Français**
+- Room, Customer and reservation management
+- Payment processing
+- Service management
+- JWT (json web token) authentifcation
+- Responsive pages
+- Dynamic dashboard
+
+**Français:**
 HotelEase est une solution complète de gestion hôtelière avec:
--Gestion des chambres, clients et réservations
--Suivi des clients
--Traitements des paiements
--Gestion des services annexes 
--Authentification sécurisée avec JWT 
--Pages responsives 
--Tableau de bord dynamique
+- Gestion des chambres, clients et réservations
+- Suivi des clients
+- Traitements des paiements
+- Gestion des services annexes 
+- Authentification sécurisée avec JWT 
+- Pages responsives 
+- Tableau de bord dynamique
+
 ## Technical Stack/Stack technique
+
 **Frontend**
 React + Vite + React Bootstrap
+
 **Backend**
 Symfony
+
 **Database**
 MySQL
-### Installation & Setup / Installation & Configuration
+
+### Installation & Setup  / Installation & Configuration
+
 Before you begin, ensure you have met the following requirements:
 You have installed PHP >= 8
 You have installed Composer
 You have installed Symfony CLI
 You have a running instance of a MySQL database
+
 **Prerequisites / Prérequis**
 - Node.js v18+
 - PHP 8.2+
 - Composer 2+
 - MySQL 8+
+
 **Backend Setup / Configuration Backend**
+
 1.Clone the repository/ Cloner la repository:
 https://github.com/medamine2003/HotelEase.git 
 
 2.Navigate to the project directory/Naviguer au projet:
-cd back-end
+cd back-end / cd front-end
 
 3.Install the dependencies/Installer les dépendances:
+
+npm install
+
 composer install
 
 4.Create the database/Créer la base de données:
+
 php bin/console doctrine:database:create
 
 5.Run the database migrations/ Faire les migrations de la base de données:
+
 php bin/console doctrine:migrations:migrate
 
 **Usage**
+
 To start the development serveur, run/ pour lancer le serveur de développement:
 symfony server:start
-**All routes/ Toutes les routes:**                   
+
+**All routes/ Toutes les routes:**  
+
 Routes principales :
 -------------------
 /api/chambres.{_format}                  (CRUD chambres)
@@ -71,20 +89,31 @@ Routes principales :
 /api/utilisateurs.{_format}              (CRUD utilisateurs)
 /api/utilisateurs/{id}.{_format}         (CRUD utilisateur spécifique)
 
+
 Routes d'authentification :
 --------------------------
 /api/login                                (Connexion)
 /api/logout                               (Déconnexion)  
 /api/me                                   (Profil utilisateur connecté)
 
+
 Routes personnalisées :
 ----------------------
 /api/reservations/{id}/add-service        (Ajouter service à réservation)
+
 /api/reservations/{reservationId}/remove-service/{serviceId} (Supprimer service)
+
 /api/reservations/{reservationId}/update-service/{serviceId} (Modifier quantité)
+
 /api/reservations/{id}/list-services      (Lister services d'une réservation)
+
+**Frontend Setup / Configuration Frontend**
+
+npm install
+
 **Running Tests/lancement des tests**                                              
 front-end:npm run test
+
 back-end:php bin/phpunit
 
 **Run the project with Docker/ Lancer le projet avec Docker**
