@@ -1,131 +1,140 @@
-# Hotel Management System / Système de Gestion Hôtelière
-**English:**
+# HotelEase – Hotel Management System / Système de Gestion Hôtelière
+
+## English
+
 HotelEase is a complete management solution featuring:
-- Room, Customer and reservation management
-- Payment processing
-- Service management
-- JWT (json web token) authentifcation
-- Responsive pages
-- Dynamic dashboard
 
-**Français:**
-HotelEase est une solution complète de gestion hôtelière avec:
-- Gestion des chambres, clients et réservations
-- Suivi des clients
-- Traitements des paiements
-- Gestion des services annexes 
-- Authentification sécurisée avec JWT 
-- Pages responsives 
-- Tableau de bord dynamique
+- Room, Customer, and Reservation management  
+- Payment processing  
+- Service management  
+- JWT (JSON Web Token) authentication  
+- Responsive pages  
+- Dynamic dashboard  
 
-## Technical Stack/Stack technique
+## Français
 
-**Frontend**
+HotelEase est une solution complète de gestion hôtelière avec :
+
+- Gestion des chambres, clients et réservations  
+- Traitement des paiements  
+- Gestion des services annexes  
+- Authentification sécurisée avec JWT  
+- Pages responsives  
+- Tableau de bord dynamique  
+
+---
+
+## Technical Stack / Stack technique
+
+### Frontend
+
 React + Vite + React Bootstrap
 
-**Backend**
+### Backend
+
 Symfony
 
-**Database**
+### Database
+
 MySQL
 
-### Installation & Setup  / Installation & Configuration
+---
+
+## Installation & Setup / Installation & Configuration
 
 Before you begin, ensure you have met the following requirements:
-You have installed PHP >= 8
-You have installed Composer
-You have installed Symfony CLI
-You have a running instance of a MySQL database
 
-**Prerequisites / Prérequis**
+- PHP >= 8.2  
+- Composer 2+  
+- Symfony CLI  
+- MySQL 8+  
 - Node.js v18+
-- PHP 8.2+
-- Composer 2+
-- MySQL 8+
 
-**Backend Setup / Configuration Backend**
+---
 
-1.Clone the repository/ Cloner la repository:
-https://github.com/medamine2003/HotelEase.git 
+### Backend Setup / Configuration Backend
 
-2.Navigate to the project directory/Naviguer au projet:
-cd back-end / cd front-end
+1. Clone the repository:  
+   `https://github.com/medamine2003/HotelEase.git`
 
-3.Install the dependencies/Installer les dépendances:
+2. Navigate to the backend directory:  
+   `cd back-end`
 
-npm install
+3. Install dependencies:  
+   `composer install`
 
-composer install
+4. Create the database:  
+   `php bin/console doctrine:database:create`
 
-4.Create the database/Créer la base de données:
+5. Run migrations:  
+   `php bin/console doctrine:migrations:migrate`
 
-php bin/console doctrine:database:create
+6. Start the development server:  
+   `symfony server:start`
 
-5.Run the database migrations/ Faire les migrations de la base de données:
+---
 
-php bin/console doctrine:migrations:migrate
+### API Routes
 
-**Usage**
+#### Main routes
 
-To start the development serveur, run/ pour lancer le serveur de développement:
-symfony server:start
+- `/api/chambres.{_format}`  
+- `/api/chambres/{id}.{_format}`  
+- `/api/clients.{_format}`  
+- `/api/clients/{id}.{_format}`  
+- `/api/paiements.{_format}`  
+- `/api/paiements/{id}.{_format}`  
+- `/api/reservations.{_format}`  
+- `/api/reservations/{id}.{_format}`  
+- `/api/reservation_services.{_format}`  
+- `/api/reservation_services/{id}.{_format}`  
+- `/api/services.{_format}`  
+- `/api/services/{id}.{_format}`  
+- `/api/utilisateurs.{_format}`  
+- `/api/utilisateurs/{id}.{_format}`  
 
-**All routes/ Toutes les routes:**  
+#### Authentication routes
 
-Routes principales :
--------------------
-/api/chambres.{_format}                  (CRUD chambres)
-/api/chambres/{id}.{_format}             (CRUD chambre spécifique)
-/api/clients.{_format}                   (CRUD clients) 
-/api/clients/{id}.{_format}              (CRUD client spécifique)
-/api/paiements.{_format}                 (CRUD paiements)
-/api/paiements/{id}.{_format}            (CRUD paiement spécifique)
-/api/reservations.{_format}              (CRUD réservations)
-/api/reservations/{id}.{_format}         (CRUD réservation spécifique)
-/api/reservation_services.{_format}      (CRUD services de réservation)
-/api/reservation_services/{id}.{_format} (CRUD service de réservation spécifique)
-/api/services.{_format}                  (CRUD services) 
-/api/services/{id}.{_format}             (CRUD service spécifique)
-/api/utilisateurs.{_format}              (CRUD utilisateurs)
-/api/utilisateurs/{id}.{_format}         (CRUD utilisateur spécifique)
+- `/api/login`  
+- `/api/logout`  
+- `/api/me`  
 
+#### Custom routes
 
-Routes d'authentification :
---------------------------
-/api/login                                (Connexion)
-/api/logout                               (Déconnexion)  
-/api/me                                   (Profil utilisateur connecté)
+- `/api/reservations/{id}/add-service`  
+- `/api/reservations/{reservationId}/remove-service/{serviceId}`  
+- `/api/reservations/{reservationId}/update-service/{serviceId}`  
+- `/api/reservations/{id}/list-services`  
 
+---
 
-Routes personnalisées :
-----------------------
-/api/reservations/{id}/add-service        (Ajouter service à réservation)
+### Frontend Setup / Configuration Frontend
 
-/api/reservations/{reservationId}/remove-service/{serviceId} (Supprimer service)
+1. Navigate to the frontend directory:  
+   `cd front-end`
 
-/api/reservations/{reservationId}/update-service/{serviceId} (Modifier quantité)
+2. Install dependencies:  
+   `npm install`
 
-/api/reservations/{id}/list-services      (Lister services d'une réservation)
+---
 
-**Frontend Setup / Configuration Frontend**
+## Running Tests / Lancement des tests
 
-npm install
+- Frontend: `npm run test`  
+- Backend: `php bin/phpunit`
 
-**Running Tests/lancement des tests**                                              
-front-end:npm run test
+---
 
-back-end:php bin/phpunit
+## Run the Project with Docker / Lancer le projet avec Docker
 
-**Run the project with Docker/ Lancer le projet avec Docker**
+- Start all containers:  
+  `docker-compose up -d`
 
-# Lancer tous les conteneurs
-docker-compose up -d
+- Stop containers:  
+  `docker-compose down`
 
-# Arrêter
-docker-compose down
+- Rebuild and start:  
+  `docker-compose up --build -d`
 
-# Rebuild + lancer
-docker-compose up --build -d
-
-# Voir les logs
-docker-compose logs -f
+- View logs:  
+  `docker-compose logs -f`
