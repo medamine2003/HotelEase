@@ -17,6 +17,8 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+// cette entité gère la création d'un client avec des conditions de validation (appliquant une logique métier)
+// This entity is responsible for the creation of a customer with some condictions
 
 #[ORM\Entity(repositoryClass: ClientRepository::class)]
 #[UniqueEntity(fields: ['numeroTelephone'], message: 'Ce numéro de téléphone est déjà utilisé.')]

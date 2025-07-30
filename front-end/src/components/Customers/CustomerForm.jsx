@@ -1,10 +1,12 @@
+// un composant de création et de modification des clients
+// a component that is used in the creation and modification of a new customer
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { Link } from 'react-router-dom';
 import { createCustomer, updateCustomer, getCustomerById } from '../../services/customerServices';
-import ErrorDisplay from '../CommonComponents/ErrorDisplay'; // Ajustez le chemin selon votre structure
+import ErrorDisplay from '../CommonComponents/ErrorDisplay'; 
 
 function CustomerForm() {
   const { id } = useParams();
@@ -91,7 +93,7 @@ function CustomerForm() {
 
   const handleChange = (field, value) => {
     setFormData({ ...formData, [field]: value });
-    // Effacer l'erreur quand l'utilisateur modifie les champs
+    
     if (error) {
       setError(null);
     }

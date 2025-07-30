@@ -1,10 +1,12 @@
+// un composant de création et de modification des paiments
+// a component that is used in the creation and modification of a new payment
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import { Button, Form, Alert, Card } from 'react-bootstrap';
+import { Button, Form,  Card } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { createPayment, updatePayment, getPaymentById, validatePaymentAmount, formatAmount } from '../../services/paymentServices';
 import { getReservations, getReservationById } from '../../services/reservationServices';
-import ErrorDisplay from '../CommonComponents/ErrorDisplay'; // <- ajout de l'import
+import ErrorDisplay from '../CommonComponents/ErrorDisplay';
 
 function PaymentForm() {
   const { id } = useParams();
@@ -42,14 +44,12 @@ function PaymentForm() {
     const loadData = async () => {
       try {
         
-        
-        // Charger les réservations
         const reservationsData = await getReservations();
         
         
         setReservations(reservationsData || []);
 
-        // Si modification d'un paiement existant
+        
         if (paymentId) {
           
           const paymentData = await getPaymentById(paymentId);
@@ -65,7 +65,7 @@ function PaymentForm() {
             reservation: paymentData.reservation?.['@id'] || ''
           });
 
-          // Charger la réservation associée
+         
           const resId = paymentData.reservation?.['@id']?.split('/').pop() || paymentData.reservation?.id;
           if (resId) {
             
@@ -73,7 +73,7 @@ function PaymentForm() {
             setSelectedReservation(reservationData);
           }
         } 
-        // Si création avec une réservation pré-sélectionnée
+       
         else if (reservationId) {
           
           const reservationData = await getReservationById(reservationId);
@@ -81,7 +81,7 @@ function PaymentForm() {
         }
 
       } catch (err) {
-        console.error('❌ Erreur lors du chargement:', err);
+        console.error(' Erreur lors du chargement:', err);
         setError("Erreur lors du chargement des données.");
       } finally {
         setLoading(false);
@@ -95,7 +95,6 @@ function PaymentForm() {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     
-    // Effacer l'erreur quand l'utilisateur modifie un champ
     if (error) setError(null);
   };
 
@@ -108,7 +107,7 @@ function PaymentForm() {
       const reservation = reservations.find((r) => r.id == resId);
       setSelectedReservation(reservation);
 
-      // Auto-remplir le montant avec le restant dû
+      
       if (reservation && !formData.montant) {
         const montantSuggere = reservation.montantRestant || reservation.montantTotal || 0;
         setFormData((prev) => ({
@@ -124,7 +123,6 @@ function PaymentForm() {
   const validateForm = () => {
   const { montant, methodePaiement, datePaiement, reservation } = formData;
 
-  // Vérification des champs obligatoires avec trim()
   if (!montant || !methodePaiement?.trim() || !datePaiement || !reservation) {
     setError("Veuillez remplir tous les champs obligatoires.");
     return false;
@@ -136,14 +134,13 @@ function PaymentForm() {
     return false;
   }
 
-  // Validation de la date
+  
   const datePayment = new Date(datePaiement);
   if (isNaN(datePayment.getTime())) {
     setError("La date de paiement n'est pas valide.");
     return false;
   }
 
-  // Validation du montant selon le type de paiement
   if (selectedReservation) {
     const montantRestant = selectedReservation.montantRestant || 0;
     
@@ -171,25 +168,21 @@ function PaymentForm() {
   return true;
 };
 
-
-  // Dans ton PaymentForm.jsx, remplace le catch par ceci :
-
 const handleSubmit = async (e) => {
   e.preventDefault();
   if (!validateForm()) return;
 
-  // Nettoyage et validation des données avant envoi
+  
   const payload = {
     montant: Math.round(parseFloat(formData.montant) * 100) / 100,
     methodePaiement: formData.methodePaiement.trim(),
-    // 🔧 CORRECTION: Formater la date selon ce que attend votre backend
-    datePaiement: formData.datePaiement ? formData.datePaiement + ':00' : null, // Garder le format datetime-local
     
+    datePaiement: formData.datePaiement ? formData.datePaiement + ':00' : null,
     typePaiement: formData.typePaiement || 'solde',
     reservation: formData.reservation
   };
 
-  // Ajouter les champs optionnels seulement s'ils ont une valeur
+  
   if (formData.numeroTransaction && formData.numeroTransaction.trim()) {
     payload.numeroTransaction = formData.numeroTransaction.trim();
   }
@@ -208,15 +201,15 @@ const handleSubmit = async (e) => {
     }
     navigate('/payments');
   } catch (error) {
-    console.error('❌ Erreur lors de la sauvegarde:', error);
+    console.error(' Erreur lors de la sauvegarde:', error);
     
     if (error.response) {
-      console.error('📄 Status:', error.response.status);
-      console.error('📄 Headers:', error.response.headers);
-      console.error('📄 Data:', error.response.data);
+      console.error(' Status:', error.response.status);
+      console.error(' Headers:', error.response.headers);
+      console.error(' Data:', error.response.data);
       
       if (error.response.data && error.response.data.violations) {
-        console.error('🚨 Erreurs de validation:', error.response.data.violations);
+        console.error(' Erreurs de validation:', error.response.data.violations);
         
         const errorMessages = error.response.data.violations.map(violation => 
           `${violation.propertyPath}: ${violation.message}`
@@ -231,10 +224,10 @@ const handleSubmit = async (e) => {
         setError(`Erreur HTTP ${error.response.status}: ${error.response.statusText}`);
       }
     } else if (error.request) {
-      console.error('📡 Pas de réponse du serveur:', error.request);
+      console.error(' Pas de réponse du serveur:', error.request);
       setError("Aucune réponse du serveur. Vérifiez votre connexion.");
     } else {
-      console.error('⚡ Erreur de configuration:', error.message);
+      console.error(' Erreur de configuration:', error.message);
       setError(`Erreur de configuration: ${error.message}`);
     }
   }

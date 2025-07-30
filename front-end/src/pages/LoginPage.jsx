@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Form, Button, Container, Row, Col, Card, Spinner, Alert, ProgressBar } from "react-bootstrap";
+import logo from "../../assets/logo.png";
+
+
 import { useAuth } from "../hooks/useAuth";
 
 const LoginForm = () => {
@@ -141,8 +144,12 @@ const LoginForm = () => {
   return (
     <Container className="d-flex justify-content-center align-items-center vh-100">
       <Row>
-        <Col>
+        <Col >
+        <div className="text-center mb-4">
+              <img src={logo} alt="Logo" className="w-100" style={{ maxWidth: "120px", height: "auto" }} />
+            </div>
           <Card className="shadow p-4 rounded-4">
+            
             <Card.Body>
               <h2 className="text-center mb-4">Connexion</h2>
 
@@ -233,11 +240,7 @@ const LoginForm = () => {
                 </Button>
 
                 {/* Info de sécurité */}
-                <div className="text-center mt-3">
-                  <small className="text-muted">
-                    Protection anti-brute-force activée
-                  </small>
-                </div>
+                
               </Form>
             </Card.Body>
           </Card>

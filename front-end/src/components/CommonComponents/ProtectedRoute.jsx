@@ -1,3 +1,4 @@
+// ce composant est utilisé pour la protection des routes 
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import Alert from 'react-bootstrap/Alert';
@@ -13,7 +14,7 @@ export function ProtectedRoute({ children, requiredRole }) {
   if (!user) 
     return <Navigate to="/login" replace />;
 
-  // NOUVEAU : Vérification du rôle si requis
+  
   if (requiredRole && user.role !== requiredRole) {
     return (
       <Container className="mt-5">

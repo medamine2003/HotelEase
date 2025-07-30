@@ -1,3 +1,5 @@
+// un composant d'un affichage des utiisateurs dans une table
+// a component that is used in the display of users in a table 
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
@@ -6,7 +8,7 @@ import Badge from 'react-bootstrap/Badge';
 import Pagination from 'react-bootstrap/Pagination';
 import { useNavigate } from 'react-router-dom';
 import { getUsers, deleteUser } from '../../services/userServices';
-import SearchBar from '../CommonComponents/SearchBar'; // Ajustez le chemin selon votre structure
+import SearchBar from '../CommonComponents/SearchBar'; 
 import ErrorDisplay from '../CommonComponents/ErrorDisplay';
 import { FiEdit, FiTrash2 } from 'react-icons/fi';
 

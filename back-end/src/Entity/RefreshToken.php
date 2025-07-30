@@ -8,6 +8,8 @@ use App\Repository\RefreshTokenRepository;
 #[ORM\Entity(repositoryClass: RefreshTokenRepository::class)]
 #[ORM\Table(name: "refresh_tokens")]
 #[ORM\Index(columns: ["token"], name: "refresh_token_idx")]
+// cette entité gère la création d'un refresh token
+// This entity is responsible for the creation of a refresh token
 class RefreshToken
 {
     #[ORM\Id]

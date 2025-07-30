@@ -1,4 +1,5 @@
-import React from 'react';
+// un composant d'affichage
+// ce composant est utilisé pour la gestion des erreurs, il est importé et utilisé où c'est nécessaire.
 import { Alert } from 'react-bootstrap';
 
 const ErrorDisplay = ({
@@ -14,61 +15,60 @@ const ErrorDisplay = ({
     return null;
   }
 
-  // Fonction pour extraire le message d'erreur selon différents formats
+  
   const getErrorMessage = (errorData) => {
     
 
-    // Si c'est déjà une string
+    
     if (typeof errorData === 'string') {
       return errorData;
     }
 
-    // Si c'est un objet Error JavaScript standard
+    
     if (errorData instanceof Error && !errorData.response) {
       return errorData.message;
     }
 
-    // Si c'est une erreur Axios avec response
+   
     if (errorData.response) {
       const { status, data } = errorData.response;
       
       
 
-      // Erreur 422 - Validation errors d'API Platform
+      
       if (status === 422 && data) {
-        // Format API Platform avec violations (le plus courant)
+       
         if (data.violations && Array.isArray(data.violations) && data.violations.length > 0) {
           return data.violations.map(violation => {
             return violation.message || 'Erreur de validation';
           });
         }
 
-        // Format API Platform avec hydra:description
+       
         if (data['hydra:description']) {
           return data['hydra:description'];
         }
 
-        // Format API Platform avec detail
+        
         if (data.detail) {
           return data.detail;
         }
 
-        // Format API Platform avec title
+        
         if (data.title) {
           return data.title;
         }
 
-        // Si violations existe mais est vide
         if (data.violations && Array.isArray(data.violations) && data.violations.length === 0) {
           return 'Erreur de validation (aucun détail disponible)';
         }
 
-        // Si data est un string
+        
         if (typeof data === 'string') {
           return data;
         }
 
-        // Fallback pour 422 - essayer d'extraire toute info utile
+       
         const possibleMessages = [];
         if (data.message) possibleMessages.push(data.message);
         if (data.error) possibleMessages.push(data.error);
@@ -76,7 +76,7 @@ const ErrorDisplay = ({
           return possibleMessages.join(' - ');
         }
 
-        // Dernier recours pour 422
+        
         return 'Erreur de validation (format de réponse non reconnu)';
       }
 

@@ -1,3 +1,6 @@
+
+// un composant de création et de modification des résevations
+// a component that is used in the creation and modification of reservations
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
@@ -191,9 +194,9 @@ function ReservationForm() {
   dateFin: formData.dateFin,
   statut: formData.statut,
   montantBase: parseFloat(formData.montantBase).toFixed(2),
-  client: formData.client,      // Garder l'IRI tel quel : "/api/clients/1"
-  chambre: formData.chambre,    // Garder l'IRI tel quel : "/api/chambres/1"
-  createur: formData.createur   // Garder l'IRI tel quel : "/api/utilisateurs/1"
+  client: formData.client,
+  chambre: formData.chambre,    
+  createur: formData.createur   
 };
 
     

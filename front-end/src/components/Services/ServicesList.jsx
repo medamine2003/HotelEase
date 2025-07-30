@@ -1,3 +1,5 @@
+// un composant d'un affichage des services dans une table
+// a component that is used in the display of services in a table 
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
@@ -5,7 +7,7 @@ import Alert from 'react-bootstrap/Alert';
 import Pagination from 'react-bootstrap/Pagination';
 import { useNavigate } from 'react-router-dom';
 import { getServices, deleteService } from '../../services/serviceServices';
-import SearchBar from '../CommonComponents/SearchBar'; // Ajustez le chemin selon votre structure
+import SearchBar from '../CommonComponents/SearchBar'; 
 import { FiEdit, FiTrash2 } from 'react-icons/fi';
 import ErrorDisplay from '../CommonComponents/ErrorDisplay';
 

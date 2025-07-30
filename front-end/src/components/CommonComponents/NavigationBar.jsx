@@ -1,3 +1,5 @@
+// un composant d'affichage
+// ce composant représente la barre de navigation de l'application, il est appelé dans toutes les pages d'affichage 
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';

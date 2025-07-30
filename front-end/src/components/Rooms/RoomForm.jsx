@@ -1,3 +1,5 @@
+// un composant de création et de modification des chambres
+// a component that is used in the creation and modification of rooms
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';

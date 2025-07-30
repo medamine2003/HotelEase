@@ -1,4 +1,4 @@
-// AuthContext.jsx
+//Ce code crée un contexte d’authentification (AuthContext) il gère l'état de l'utilisateur ( connecté/chargement/non connecté et il fait aussi les fonctions de login/logout)
 import { createContext, useState, useEffect } from 'react';
 import api from '../services/api';
 

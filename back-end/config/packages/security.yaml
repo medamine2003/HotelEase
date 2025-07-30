@@ -22,7 +22,7 @@ security:
                 success_handler: App\Security\JwtCookieAuthenticationSuccessHandler
                 failure_handler: lexik_jwt_authentication.handler.authentication_failure
 
-        # AJOUTEZ CE FIREWALL REFRESH (AVANT api)
+        #  CE FIREWALL Gére le REFRESH (AVANT api)
         refresh:
             pattern: ^/api/token/refresh$
             stateless: true
@@ -38,7 +38,8 @@ security:
         - { path: ^/api/login$, roles: PUBLIC_ACCESS }
         - { path: ^/api/token/refresh$, roles: PUBLIC_ACCESS }
 
-        # SEULE RESTRICTION : Gestion utilisateurs = Admin uniquement
+        # Gestion fine des roles  :
+        # Gestion utilisateurs = Admin uniquement
         - { path: ^/api/utilisateurs, roles: ROLE_ADMIN }
 
         # TOUT LE RESTE : Admin + Réceptionniste peuvent tout faire

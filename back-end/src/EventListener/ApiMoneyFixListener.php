@@ -5,7 +5,8 @@ namespace App\EventListener;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-
+//ce listener est utilisé pour détecter l'existence des floats dans le code 
+// this listener is used for the detection of any floats in the app 
 class ApiMoneyFixListener implements EventSubscriberInterface
 {
     public function onKernelRequest(RequestEvent $event): void

@@ -1,3 +1,5 @@
+// un composant d'un affichage des paiments dans une table
+// a component that is used in the display of payments in a table 
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
@@ -7,7 +9,7 @@ import Pagination from 'react-bootstrap/Pagination';
 import { FiEdit, FiTrash2 } from 'react-icons/fi';
 import { useNavigate, Link } from 'react-router-dom';
 import { getPayments, deletePayment, formatAmount, roundToTwoDecimals } from '../../services/paymentServices';
-import SearchBar from '../CommonComponents/SearchBar'; // Ajustez le chemin selon votre structure
+import SearchBar from '../CommonComponents/SearchBar'; 
 import ErrorDisplay from '../CommonComponents/ErrorDisplay';
 
 function PaymentList() {
@@ -29,7 +31,7 @@ function PaymentList() {
   
   const navigate = useNavigate();
 
-  // Configuration des filtres pour le SearchBar
+  
   const paymentFilters = useMemo(() => [
     {
       key: 'type',
@@ -57,16 +59,16 @@ function PaymentList() {
     }
   ], []);
 
-  // Fonctions avec useCallback
+  
   const fixPrecisionIssues = useCallback((payments) => {
     return payments.map(payment => {
       if (payment.reservation) {
-        // Corriger le montant restant s'il y a une erreur de précision
+        // condition pour corriger le montant restant s'il y a une erreur de précision
         if (payment.reservation.montantRestant && Math.abs(payment.reservation.montantRestant) < 0.01) {
           payment.reservation.montantRestant = 0;
         }
         
-        // Corriger le statut si le montant restant est pratiquement zéro
+        // conction pour corriger le statut si le montant restant est pratiquement zéro
         if (payment.reservation.montantRestant === 0 || Math.abs(payment.reservation.montantRestant) < 0.01) {
           payment.reservation.statutPaiement = 'complet';
         }
@@ -99,24 +101,24 @@ function PaymentList() {
       setPayments(correctedPayments);
       
     } catch (error) {
-      console.error('❌ Erreur fetchPayments:', error);
+      console.error(' Erreur fetchPayments:', error);
       setError("Erreur lors de la récupération des paiements. Veuillez réessayer.");
     } finally {
       setLoading(false);
     }
   }, [fixPrecisionIssues]);
 
-  // useEffects
+  
   useEffect(() => {
     fetchPayments();
   }, [fetchPayments]);
 
-  // Calcul des paiements filtrés avec useMemo
+  
   const filteredPayments = useMemo(() => {
    
     let filtered = payments;
 
-    // Filtre par recherche (client, numéro transaction)
+    
     if (searchTerm) {
       filtered = filtered.filter(payment => 
         payment.reservation?.client?.nom?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -126,12 +128,12 @@ function PaymentList() {
       );
     }
 
-    // Filtre par type
+    
     if (filterValues.type) {
       filtered = filtered.filter(payment => payment.typePaiement === filterValues.type);
     }
 
-    // Filtre par méthode
+    
     if (filterValues.method) {
       filtered = filtered.filter(payment => payment.methodePaiement === filterValues.method);
     }
@@ -140,7 +142,7 @@ function PaymentList() {
     return filtered;
   }, [payments, searchTerm, filterValues]);
 
-  // Calcul de la pagination
+ 
   const paginationData = useMemo(() => {
     const totalItems = filteredPayments.length;
     const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -157,12 +159,12 @@ function PaymentList() {
     };
   }, [filteredPayments, currentPage, itemsPerPage]);
 
-  // Réinitialiser la page quand les filtres changent
+  
   useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, filterValues]);
 
-  // Calculer les statistiques avec useMemo
+  
   const stats = useMemo(() => {
     const calculatedStats = {
       totalAmount: roundToTwoDecimals(
@@ -182,7 +184,7 @@ function PaymentList() {
   }, [paginationData.currentItems, paginationData.totalItems, filteredPayments]);
 
   const handleDeleteClick = (payment) => {
-    // Validation avant suppression
+    
     if (!payment || !payment.id) {
       setDeleteError("Impossible de supprimer ce paiement : données invalides.");
       return;
@@ -208,7 +210,7 @@ function PaymentList() {
       setShowConfirmModal(false);
       setPaymentToDelete(null);
       
-      // Ajuster la page si nécessaire après suppression
+      
       const newTotalPages = Math.ceil((filteredPayments.length - 1) / itemsPerPage);
       if (currentPage > newTotalPages && newTotalPages > 0) {
         setCurrentPage(newTotalPages);
@@ -250,7 +252,7 @@ function PaymentList() {
     );
   };
 
-  // Fonction pour formater la date avec gestion d'erreur
+  
   const formatDate = (dateString) => {
     try {
       return new Date(dateString).toLocaleDateString('fr-FR');
@@ -259,7 +261,7 @@ function PaymentList() {
     }
   };
 
-  // Fonction pour formater la date et heure avec gestion d'erreur
+  
   const formatDateTime = (dateString) => {
     try {
       return new Date(dateString).toLocaleString('fr-FR');
@@ -302,7 +304,7 @@ function PaymentList() {
         <h1 id="page-title">Gestion des Paiements</h1>
       </div>
 
-      {/* SearchBar réutilisable */}
+      
       <SearchBar
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
@@ -313,7 +315,7 @@ function PaymentList() {
         onReset={() => { setSearchTerm(''); setFilterValues({}); setCurrentPage(1); }}
       />
 
-      {/* Informations sur les résultats */}
+      
       <div className="d-flex justify-content-between align-items-center mb-3">
         <div aria-live="polite" role="status">
           {paginationData.totalItems === 0 ? (
@@ -326,7 +328,7 @@ function PaymentList() {
         </div>
       </div>
 
-      {/* Section des statistiques */}
+      
       <section aria-labelledby="stats-title">
         <h2 id="stats-title" className="visually-hidden">Statistiques des paiements</h2>
         <div className="row mb-4">
@@ -373,7 +375,7 @@ function PaymentList() {
         </div>
       </section>
 
-      {/* Section du tableau des paiements */}
+      
       <section aria-labelledby="payments-table-title">
         <h2 id="payments-table-title" className="visually-hidden">Liste des paiements</h2>
         <div className="table-responsive">
@@ -458,7 +460,7 @@ function PaymentList() {
         </div>
       </section>
 
-      {/* Pagination */}
+      
       {paginationData.totalPages > 1 && (
         <div className="d-flex justify-content-center mt-4">
           <Pagination aria-label="Navigation des pages">
@@ -473,7 +475,7 @@ function PaymentList() {
               aria-label="Page précédente"
             />
             
-            {/* Pages numérotées */}
+            
             {Array.from({ length: Math.min(5, paginationData.totalPages) }, (_, index) => {
               let pageNumber;
               if (paginationData.totalPages <= 5) {
@@ -513,7 +515,7 @@ function PaymentList() {
         </div>
       )}
 
-      {/* Légende */}
+      
       <div className="mt-3 text-muted small" role="region" aria-label="Légende des types de paiements">
         <strong>Légende :</strong>
         {getTypeBadge('acompte')} Acompte &nbsp;
@@ -521,7 +523,7 @@ function PaymentList() {
         {getTypeBadge('remboursement')} Remboursement
       </div>
 
-      {/* Modal de confirmation de suppression */}
+      
       <Modal 
         show={showConfirmModal} 
         onHide={handleCancelDelete} 

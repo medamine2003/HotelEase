@@ -1,9 +1,10 @@
+// un composant de création et de modification des services
+// a component that is used in the creation and modification of services
 import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { Link } from 'react-router-dom';
-import Alert from 'react-bootstrap/Alert';
 import { createService, updateService, getServiceById } from '../../services/serviceServices';
 import ErrorDisplay from '../CommonComponents/ErrorDisplay';
 
@@ -124,7 +125,7 @@ function ServiceForm() {
       
       // Essayer plusieurs méthodes pour extraire le message
       try {
-        // Méthode 1: Si c'est un JSON dans err.message
+        
         const errorData = JSON.parse(err.message);
         if (errorData.violations?.[0]?.message) {
           setError(errorData.violations[0].message);
@@ -134,13 +135,13 @@ function ServiceForm() {
           setError("Une erreur est survenue");
         }
       } catch {
-        // Méthode 2: Si err.response existe
+        
         if (err.response?.data?.violations?.[0]?.message) {
           setError(err.response.data.violations[0].message);
         } else if (err.response?.data?.detail) {
           setError(err.response.data.detail);
         } 
-        // Méthode 3: Passer l'erreur complète à ErrorDisplay (comme CustomerForm)
+        
         else {
           setError(err);
         }

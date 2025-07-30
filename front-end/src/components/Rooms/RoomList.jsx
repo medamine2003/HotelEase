@@ -1,3 +1,5 @@
+// un composant d'un affichage des chambres dans une table
+// a component that is used in the display of rooms in a table 
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
@@ -6,7 +8,7 @@ import Badge from 'react-bootstrap/Badge';
 import Pagination from 'react-bootstrap/Pagination';
 import { useNavigate } from 'react-router-dom';
 import { getRooms, deleteRoom } from '../../services/roomServices';
-import SearchBar from '../CommonComponents/SearchBar'; // Ajustez le chemin selon votre structure
+import SearchBar from '../CommonComponents/SearchBar'; 
 import ErrorDisplay from '../CommonComponents/ErrorDisplay';
 
 function RoomList() {
@@ -243,7 +245,7 @@ function RoomList() {
         
       </div>
 
-      {/* SearchBar réutilisable */}
+     
       <SearchBar
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
@@ -254,7 +256,7 @@ function RoomList() {
         onReset={() => { setSearchTerm(''); setFilterValues({}); setCurrentPage(1); }}
       />
 
-      {/* Informations sur les résultats */}
+      
       <div className="d-flex justify-content-between align-items-center mb-3">
         <div aria-live="polite" role="status">
           {paginationData.totalItems === 0 ? (
@@ -267,7 +269,7 @@ function RoomList() {
         </div>
       </div>
 
-      {/* Tableau des chambres */}
+      
       <section aria-labelledby="rooms-table-title">
         <h2 id="rooms-table-title" className="visually-hidden">Liste des chambres</h2>
         <div className="table-responsive">
@@ -361,7 +363,7 @@ function RoomList() {
               aria-label="Page précédente"
             />
             
-            {/* Pages numérotées */}
+          
             {Array.from({ length: Math.min(5, paginationData.totalPages) }, (_, index) => {
               let pageNumber;
               if (paginationData.totalPages <= 5) {
@@ -401,7 +403,7 @@ function RoomList() {
         </div>
       )}
 
-      {/* Modal de confirmation de suppression */}
+      
       <Modal 
         show={showConfirmModal} 
         onHide={handleCancelDelete} 

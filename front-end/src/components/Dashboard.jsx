@@ -1,3 +1,5 @@
+// la page principale de l'application elle contient les informations les plus pertinentes.
+// this is the main page of the application where statistics and main infos are seen
 import { useState, useEffect, useMemo } from 'react';
 import { Container, Row, Col, Card, Spinner, Badge } from 'react-bootstrap';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
@@ -99,10 +101,10 @@ function Dashboard() {
       label: 'Domaine',
       defaultOption: 'Tous les domaines',
       options: [
-        { value: 'paiements', label: <><FaCreditCard className="me-1" style={{color: '#10b981'}} />Paiements</> },
-        { value: 'reservations', label: <><FaCalendarAlt className="me-1" style={{color: '#3b82f6'}} />Réservations</> },
-        { value: 'clients', label: <><FaUsers className="me-1" style={{color: '#8b5cf6'}} />Clients</> },
-        { value: 'chambres', label: <><FaHome className="me-1" style={{color: '#f59e0b'}} />Chambres</> }
+       { value: 'paiements', label: 'Paiements' },
+       { value: 'reservations', label: 'Réservations' },
+       { value: 'clients', label: 'Clients' },
+       { value: 'chambres', label: 'Chambres' }
       ]
     }
   ];

@@ -21,7 +21,8 @@ use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Annotation\Context;
 use Symfony\Component\Serializer\Annotation\SerializedName;
 
-
+// cette entité gère la création d'une réservation avec des conditions de validation (appliquant une logique métier)
+// This entity is responsible for the creation of a reservation with some condictions
 #[ORM\Entity(repositoryClass: ReservationRepository::class)]
 #[ORM\Table(name: 'reservation')]
 #[ApiResource(
@@ -95,7 +96,7 @@ class Reservation
     private ?string $statut = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]
-    #[Groups(['reservation:read'])]  // ← Seulement 'reservation:read'
+    #[Groups(['reservation:read'])]  
     private $montantTotal = null;
 
     #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2)]

@@ -100,3 +100,7 @@ services:
     App\EventListener\ApiMoneyFixListener:
         tags:
             - { name: kernel.event_subscriber }
+    # Le listener de lla sécurité contre les failles csrf
+    App\EventListener\SecurityHeadersListener:
+        tags:
+            - { name: kernel.event_subscriber }        

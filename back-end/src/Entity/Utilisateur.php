@@ -18,7 +18,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-
+// cette entité gère la création d'un utilisateur avec des conditions de validation (appliquant une logique métier)
+// This entity is responsible for the creation of a user with some condictions
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
 #[ApiResource(
     operations: [

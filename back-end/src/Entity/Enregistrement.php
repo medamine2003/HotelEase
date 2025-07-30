@@ -4,7 +4,8 @@ namespace App\Entity;
 
 use App\Repository\EnregistrementRepository;
 use Doctrine\ORM\Mapping as ORM;
-
+// cette entité gère la sauvegarde des modifcations faites
+// This entity assures the record of the modifications
 #[ORM\Entity(repositoryClass: EnregistrementRepository::class)]
 #[ORM\Table(name: 'enregistrement')]
 class Enregistrement

@@ -1,3 +1,4 @@
+// composant est un composant d'affichage il est réutilisable dans toutes les pages où une recherche est nécessaire
 import { useState, useCallback, useMemo } from 'react';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
@@ -61,12 +62,12 @@ function SearchBar({
     }
   }, [onReset]);
 
-  // Vérifier si des filtres sont actifs
+  
   const hasActiveFilters = useMemo(() => {
     return searchTerm || Object.values(filterValues).some(value => value && value !== '');
   }, [searchTerm, filterValues]);
 
-  // Calculer la disposition des colonnes selon le nombre de filtres
+  
   const getColumnConfig = useMemo(() => {
     const totalElements = 1 + filters.length + (showReset ? 1 : 0); // recherche + filtres + reset
     
@@ -195,60 +196,5 @@ function SearchBar({
 
 export default SearchBar;
 
-// ===== EXEMPLES D'UTILISATION =====
 
-/**
- * Exemple pour la liste des clients
- */
-export const CustomerSearchExample = () => {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterValues, setFilterValues] = useState({});
-
-  const customerFilters = [
-    {
-      key: 'hasPhone',
-      type: 'select',
-      label: 'Téléphone',
-      defaultOption: 'Tous',
-      ariaLabel: 'Filtrer par présence de téléphone',
-      options: [
-        { value: 'yes', label: 'Avec téléphone' },
-        { value: 'no', label: 'Sans téléphone' }
-      ]
-    },
-    {
-      key: 'hasAddress',
-      type: 'select',
-      label: 'Adresse',
-      defaultOption: 'Tous',
-      ariaLabel: 'Filtrer par présence d\'adresse',
-      options: [
-        { value: 'yes', label: 'Avec adresse' },
-        { value: 'no', label: 'Sans adresse' }
-      ]
-    }
-  ];
-
-  const handleFilterChange = (key, value) => {
-    setFilterValues(prev => ({ ...prev, [key]: value }));
-  };
-
-  const handleReset = () => {
-    setSearchTerm('');
-    setFilterValues({});
-  };
-
-  return (
-    <SearchBar
-      searchTerm={searchTerm}
-      onSearchChange={setSearchTerm}
-      placeholder="Rechercher par nom, prénom, téléphone ou adresse..."
-      filters={customerFilters}
-      filterValues={filterValues}
-      onFilterChange={handleFilterChange}
-      onReset={handleReset}
-      ariaLabel="Recherche et filtres pour les clients"
-    />
-  );
-};
 

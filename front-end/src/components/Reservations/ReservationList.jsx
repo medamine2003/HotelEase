@@ -1,3 +1,5 @@
+// un composant d'un affichage des réservations dans une table
+// a component that is used in the display of rservations in a table 
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import Button from 'react-bootstrap/Button';
 import Badge from 'react-bootstrap/Badge';
@@ -11,6 +13,7 @@ import ReservationServices from '../../components/CommonComponents/ReservationSe
 import Modal from 'react-bootstrap/Modal';
 import ErrorDisplay from '../CommonComponents/ErrorDisplay';
 import { PageHeader, HotelTable, LoadingSpinner, HotelModal } from '../../layout';
+
 
 function ReservationList() {
   const [reservations, setReservations] = useState([]);

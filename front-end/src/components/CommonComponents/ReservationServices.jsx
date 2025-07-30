@@ -1,3 +1,6 @@
+// un composant d'affichage
+// ce composant est utilisé pour attribuer des services annexes à une réservation avec leurs quantités exactes , il est possible de les retirer après 
+// le montant de ces services est calculé et ajouté au total de la réservation
 import { useEffect, useState, useCallback } from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
@@ -140,18 +143,18 @@ function ReservationServices({ reservationId, onTotalChange,onServicesUpdated })
     }
   };
 
-  // Supprimer un service de la réservation
+  
   // Supprimer un service de la réservation
 const handleRemoveService = async (reservationServiceId) => {
   if (!confirm('Voulez-vous vraiment supprimer ce service ?')) return;
 
   try {
-    //  Suppression directe sans vérifier result.success
+    // Suppression directe sans vérifier result.success
     await removeServiceFromReservation(reservationId, reservationServiceId);
     
     
     
-    // 🎯 RECHARGER les services après suppression
+    // recharger les services après suppression
     await fetchReservationServices();
     onServicesUpdated?.();
     

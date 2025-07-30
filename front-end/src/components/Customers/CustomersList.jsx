@@ -1,3 +1,5 @@
+// un composant d'un affichage des clients dans une table
+// a component that is used in the display of clients in a table 
 import { useEffect, useState, useCallback, useMemo } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
@@ -6,8 +8,8 @@ import Pagination from 'react-bootstrap/Pagination';
 import { FiEdit, FiTrash2 } from 'react-icons/fi';
 import { useNavigate } from 'react-router-dom';
 import { getCustomers, deleteCustomer } from '../../services/customerServices';
-import SearchBar from '../CommonComponents/SearchBar'; // Ajustez le chemin selon votre structure
-import ErrorDisplay from '../CommonComponents/ErrorDisplay'; // Ajustez le chemin selon votre structure
+import SearchBar from '../CommonComponents/SearchBar'; 
+import ErrorDisplay from '../CommonComponents/ErrorDisplay'; 
 
 function CustomerList() {
   const [customers, setCustomers] = useState([]);

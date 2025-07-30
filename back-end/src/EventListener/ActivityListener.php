@@ -7,7 +7,7 @@ use App\Entity\Enregistrement;
 use App\Entity\Paiement;
 use Doctrine\ORM\Event\OnFlushEventArgs;
 use Symfony\Bundle\SecurityBundle\Security;
-
+// ce listener détecte les modifcations avant de les enregistrer dans la table enregistrement 
 class ActivityListener
 {
     private Security $security;
