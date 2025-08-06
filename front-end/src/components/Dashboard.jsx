@@ -375,10 +375,10 @@ function Dashboard() {
       <NavigationBar />
       <Container fluid className="mt-4">
         <h1 className="mb-4" style={{color: '#1e293b'}}>
-          <FaChartPie className="me-2" style={{color: '#3b82f6'}} />Dashboard
+          <FaChartPie className="me-2" style={{color: '#3b82f6'}} />Tableau de bord
         </h1>
 
-        {/* Affichage des erreurs */}
+       
         <ErrorDisplay 
           error={errors.global} 
           title="Erreur générale du dashboard"
@@ -416,212 +416,8 @@ function Dashboard() {
           onReset={handleReset}
           ariaLabel="Recherche globale dans tous les domaines"
         />
-
-        {/* Première ligne - Indicateurs et révisions */}
-        <Row>
-          <Col lg={3} md={6} className="mb-4">
-            <Card className="h-100">
-              <Card.Header>
-                <h6 className="mb-0">
-                  <FaCalendarWeek className="me-2" style={{color: '#3b82f6'}} />Révisions
-                </h6>
-              </Card.Header>
-              <Card.Body className="text-center">
-                <div className="display-4 mb-2" style={{color: '#2563eb'}}>{nextWeekReservations.length}</div>
-                <p className="mb-0">Réservations prévues</p>
-                <small className="text-muted">Semaine prochaine</small>
-                {errors.reservations && (
-                  <div className="mt-2">
-                    <Badge bg="warning">Données incomplètes</Badge>
-                  </div>
-                )}
-              </Card.Body>
-            </Card>
-          </Col>
-
-          <Col lg={3} md={6} className="mb-4">
-            <Card className="h-100">
-              <Card.Header>
-                <h6 className="mb-0">
-                  <FaHotel className="me-2" style={{color: '#10b981'}} />État des chambres
-                </h6>
-              </Card.Header>
-              <Card.Body>
-                {errors.rooms || errors.reservations ? (
-                  <div className="text-center text-warning">
-                    <p><FaExclamationTriangle className="me-2" style={{color: '#d97706'}} />Erreur de chargement</p>
-                    <small>Les données des chambres ne sont pas disponibles</small>
-                  </div>
-                ) : roomStatusData.length > 0 ? (
-                  <ResponsiveContainer width="100%" height={200}>
-                    <PieChart>
-                      <Pie
-                        data={roomStatusData}
-                        cx="50%"
-                        cy="50%"
-                        innerRadius={40}
-                        outerRadius={80}
-                        paddingAngle={5}
-                        dataKey="value"
-                      >
-                        {roomStatusData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={ROOM_COLORS[index % ROOM_COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip formatter={(value) => [`${value} chambre${value > 1 ? 's' : ''}`, 'Nombre']} />
-                      <Legend 
-                        formatter={(value, entry) => (
-                          <span style={{ color: entry.color, fontSize: '12px' }}>
-                            {value} ({entry.payload.value})
-                          </span>
-                        )}
-                      />
-                    </PieChart>
-                  </ResponsiveContainer>
-                ) : (
-                  <div className="text-center text-muted">
-                    <p>Aucune donnée de chambre</p>
-                  </div>
-                )}
-              </Card.Body>
-            </Card>
-          </Col>
-
-          <Col lg={6} className="mb-4">
-            <Card className="h-100">
-              <Card.Header>
-                <h6 className="mb-0">
-                  <FaClipboardList className="me-2" style={{color: '#8b5cf6'}} />Planning du jour
-                </h6>
-                <small className="text-muted">{new Date().toLocaleDateString('fr-FR')}</small>
-              </Card.Header>
-              <Card.Body>
-                {errors.reservations ? (
-                  <div className="text-center text-warning">
-                    <p><FaExclamationTriangle className="me-2" style={{color: '#d97706'}} />Impossible de charger le planning</p>
-                    <small>Erreur lors du chargement des réservations</small>
-                  </div>
-                ) : (
-                  <Row>
-                    <Col md={6}>
-                      <h6 style={{color: '#059669'}}>
-                        <FaCheckCircle className="me-2" />Arrivées ({todaySchedule.arrivals.length})
-                      </h6>
-                      <div style={{ maxHeight: '150px', overflowY: 'auto' }}>
-                        {todaySchedule.arrivals.length > 0 ? (
-                          todaySchedule.arrivals.map(arrival => (
-                            <div key={arrival.id} className="d-flex justify-content-between mb-2 p-2 bg-light rounded">
-                              <div>
-                                <strong>{arrival.client?.nom} {arrival.client?.prenom}</strong>
-                                <br />
-                                <small>Ch. #{arrival.chambre?.numero}</small>
-                              </div>
-                            </div>
-                          ))
-                        ) : (
-                          <p className="text-muted small">Aucune arrivée prévue</p>
-                        )}
-                      </div>
-                    </Col>
-                    <Col md={6}>
-                      <h6 style={{color: '#dc2626'}}>
-                        <FaTimesCircle className="me-2" />Départs ({todaySchedule.departures.length})
-                      </h6>
-                      <div style={{ maxHeight: '150px', overflowY: 'auto' }}>
-                        {todaySchedule.departures.length > 0 ? (
-                          todaySchedule.departures.map(departure => (
-                            <div key={departure.id} className="d-flex justify-content-between mb-2 p-2 bg-light rounded">
-                              <div>
-                                <strong>{departure.client?.nom} {departure.client?.prenom}</strong>
-                                <br />
-                                <small>Ch. #{departure.chambre?.numero}</small>
-                              </div>
-                            </div>
-                          ))
-                        ) : (
-                          <p className="text-muted small">Aucun départ prévu</p>
-                        )}
-                      </div>
-                    </Col>
-                  </Row>
-                )}
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-
-        {/* Deuxième ligne - Graphiques existants */}
-        <Row>
-          <Col lg={6} className="mb-4">
-            <Card className="h-100">
-              <Card.Header>
-                <h5 className="mb-0">
-                  <FaChartPie className="me-2" style={{color: '#f59e0b'}} />Répartition par méthode de paiement
-                </h5>
-                <small className="text-muted">{payments.length} paiement{payments.length > 1 ? 's' : ''} au total</small>
-              </Card.Header>
-              <Card.Body>
-                {errors.payments ? (
-                  <div className="text-center text-warning d-flex flex-column justify-content-center" style={{ height: '300px' }}>
-                    <div className="mb-3">
-                      <i className="bi bi-exclamation-triangle" style={{ fontSize: '3rem', opacity: 0.3 }}></i>
-                    </div>
-                    <h6>Erreur de chargement des paiements</h6>
-                    <p className="small">Impossible d'afficher les statistiques de paiement</p>
-                  </div>
-                ) : pieData.length > 0 ? (
-                  <ResponsiveContainer width="100%" height={300}>
-                    <PieChart>
-                      <Pie
-                        data={pieData}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        label={false}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                      >
-                        {pieData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip 
-                        formatter={(value, name, props) => [
-                          `${formatAmount(value)} (${props.payload.count} paiement${props.payload.count > 1 ? 's' : ''})`,
-                          'Montant total'
-                        ]}
-                        contentStyle={{
-                          backgroundColor: '#f8fafc',
-                          border: '1px solid #e2e8f0',
-                          borderRadius: '4px',
-                          boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
-                          color: '#1e293b'
-                        }}
-                      />
-                      <Legend 
-                        formatter={(value, entry) => (
-                          <span style={{ color: entry.color }}>
-                            {value} ({formatAmount(entry.payload.value)})
-                          </span>
-                        )}
-                      />
-                    </PieChart>
-                  </ResponsiveContainer>
-                ) : (
-                  <div className="text-center text-muted d-flex flex-column justify-content-center" style={{ height: '300px' }}>
-                    <div className="mb-3">
-                      <i className="bi bi-pie-chart" style={{ fontSize: '3rem', opacity: 0.3 }}></i>
-                    </div>
-                    <h6>Aucun paiement trouvé</h6>
-                    <p className="small">Aucune donnée à afficher pour le moment</p>
-                  </div>
-                )}
-              </Card.Body>
-            </Card>
-          </Col>
-
-          <Col lg={6} className="mb-4">
+      <Row>
+       <Col lg={6} className="mb-4">
             <Card className="h-100">
               <Card.Header>
                 <h5 className="mb-0">
@@ -722,7 +518,213 @@ function Dashboard() {
               </Card.Body>
             </Card>
           </Col>
+          <Col lg={6} className="mb-4">
+            <Card className="h-100">
+              <Card.Header>
+                <h6 className="mb-0">
+                  <FaClipboardList className="me-2" style={{color: '#8b5cf6'}} />Planning du jour
+                </h6>
+                <small className="text-muted">{new Date().toLocaleDateString('fr-FR')}</small>
+              </Card.Header>
+              <Card.Body>
+                {errors.reservations ? (
+                  <div className="text-center text-warning">
+                    <p><FaExclamationTriangle className="me-2" style={{color: '#d97706'}} />Impossible de charger le planning</p>
+                    <small>Erreur lors du chargement des réservations</small>
+                  </div>
+                ) : (
+                  <Row>
+                    <Col md={6}>
+                      <h6 style={{color: '#059669'}}>
+                        <FaCheckCircle className="me-2" />Arrivées ({todaySchedule.arrivals.length})
+                      </h6>
+                      <div style={{ maxHeight: '150px', overflowY: 'auto' }}>
+                        {todaySchedule.arrivals.length > 0 ? (
+                          todaySchedule.arrivals.map(arrival => (
+                            <div key={arrival.id} className="d-flex justify-content-between mb-2 p-2 bg-light rounded">
+                              <div>
+                                <strong>{arrival.client?.nom} {arrival.client?.prenom}</strong>
+                                <br />
+                                <small>Ch. #{arrival.chambre?.numero}</small>
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <p className="text-muted small">Aucune arrivée prévue</p>
+                        )}
+                      </div>
+                    </Col>
+                    <Col md={6}>
+                      <h6 style={{color: '#dc2626'}}>
+                        <FaTimesCircle className="me-2" />Départs ({todaySchedule.departures.length})
+                      </h6>
+                      <div style={{ maxHeight: '150px', overflowY: 'auto' }}>
+                        {todaySchedule.departures.length > 0 ? (
+                          todaySchedule.departures.map(departure => (
+                            <div key={departure.id} className="d-flex justify-content-between mb-2 p-2 bg-light rounded">
+                              <div>
+                                <strong>{departure.client?.nom} {departure.client?.prenom}</strong>
+                                <br />
+                                <small>Ch. #{departure.chambre?.numero}</small>
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <p className="text-muted small">Aucun départ prévu</p>
+                        )}
+                      </div>
+                    </Col>
+                  </Row>
+                )}
+              </Card.Body>
+            </Card>
+          </Col>
+          </Row>
+        <Row>
+          <Col lg={3} md={6} className="mb-4">
+            <Card className="h-100">
+              <Card.Header>
+                <h6 className="mb-0">
+                  <FaCalendarWeek className="me-2" style={{color: '#3b82f6'}} />Révisions
+                </h6>
+              </Card.Header>
+              <Card.Body className="text-center">
+                <div className="display-4 mb-2" style={{color: '#2563eb'}}>{nextWeekReservations.length}</div>
+                <p className="mb-0">Réservations prévues</p>
+                <small className="text-muted">Semaine prochaine</small>
+                {errors.reservations && (
+                  <div className="mt-2">
+                    <Badge bg="warning">Données incomplètes</Badge>
+                  </div>
+                )}
+              </Card.Body>
+            </Card>
+          </Col>
+
+          <Col lg={3} md={6} className="mb-4">
+            <Card className="h-100">
+              <Card.Header>
+                <h6 className="mb-0">
+                  <FaHotel className="me-2" style={{color: '#10b981'}} />État des chambres
+                </h6>
+              </Card.Header>
+              <Card.Body>
+                {errors.rooms || errors.reservations ? (
+                  <div className="text-center text-warning">
+                    <p><FaExclamationTriangle className="me-2" style={{color: '#d97706'}} />Erreur de chargement</p>
+                    <small>Les données des chambres ne sont pas disponibles</small>
+                  </div>
+                ) : roomStatusData.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={200}>
+                    <PieChart>
+                      <Pie
+                        data={roomStatusData}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={40}
+                        outerRadius={80}
+                        paddingAngle={5}
+                        dataKey="value"
+                      >
+                        {roomStatusData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={ROOM_COLORS[index % ROOM_COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip formatter={(value) => [`${value} chambre${value > 1 ? 's' : ''}`, 'Nombre']} />
+                      <Legend 
+                        formatter={(value, entry) => (
+                          <span style={{ color: entry.color, fontSize: '12px' }}>
+                            {value} ({entry.payload.value})
+                          </span>
+                        )}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="text-center text-muted">
+                    <p>Aucune donnée de chambre</p>
+                  </div>
+                )}
+              </Card.Body>
+            </Card>
+          </Col>
+          <Col lg={6} className="mb-4">
+            <Card className="h-100">
+              <Card.Header>
+                <h5 className="mb-0">
+                  <FaChartPie className="me-2" style={{color: '#f59e0b'}} />Répartition par méthode de paiement
+                </h5>
+                <small className="text-muted">{payments.length} paiement{payments.length > 1 ? 's' : ''} au total</small>
+              </Card.Header>
+              <Card.Body>
+                {errors.payments ? (
+                  <div className="text-center text-warning d-flex flex-column justify-content-center" style={{ height: '300px' }}>
+                    <div className="mb-3">
+                      <i className="bi bi-exclamation-triangle" style={{ fontSize: '3rem', opacity: 0.3 }}></i>
+                    </div>
+                    <h6>Erreur de chargement des paiements</h6>
+                    <p className="small">Impossible d'afficher les statistiques de paiement</p>
+                  </div>
+                ) : pieData.length > 0 ? (
+                  <ResponsiveContainer width="100%" height={300}>
+                    <PieChart>
+                      <Pie
+                        data={pieData}
+                        cx="50%"
+                        cy="50%"
+                        labelLine={false}
+                        label={false}
+                        outerRadius={80}
+                        fill="#8884d8"
+                        dataKey="value"
+                      >
+                        {pieData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip 
+                        formatter={(value, name, props) => [
+                          `${formatAmount(value)} (${props.payload.count} paiement${props.payload.count > 1 ? 's' : ''})`,
+                          'Montant total'
+                        ]}
+                        contentStyle={{
+                          backgroundColor: '#f8fafc',
+                          border: '1px solid #e2e8f0',
+                          borderRadius: '4px',
+                          boxShadow: '0 2px 5px rgba(0,0,0,0.1)',
+                          color: '#1e293b'
+                        }}
+                      />
+                      <Legend 
+                        formatter={(value, entry) => (
+                          <span style={{ color: entry.color }}>
+                            {value} ({formatAmount(entry.payload.value)})
+                          </span>
+                        )}
+                      />
+                    </PieChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="text-center text-muted d-flex flex-column justify-content-center" style={{ height: '300px' }}>
+                    <div className="mb-3">
+                      <i className="bi bi-pie-chart" style={{ fontSize: '3rem', opacity: 0.3 }}></i>
+                    </div>
+                    <h6>Aucun paiement trouvé</h6>
+                    <p className="small">Aucune donnée à afficher pour le moment</p>
+                  </div>
+                )}
+              </Card.Body>
+            </Card>
+          </Col>     
+          
         </Row>
+
+        
+        
+          
+          
+          
+        
       </Container>
     </>
   );

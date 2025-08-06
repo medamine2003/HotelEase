@@ -62,7 +62,7 @@ function ReservationServices({ reservationId, onTotalChange,onServicesUpdated })
       
       setReservationServices(servicesWithDetails);
       
-      // Calculer le total et notifier le parent
+      
       const total = servicesWithDetails.reduce((sum, rs) => 
         sum + (parseFloat(rs.sousTotal) || 0), 0
       );

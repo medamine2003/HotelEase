@@ -5,8 +5,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import  InputGroup  from 'react-bootstrap/InputGroup';
 import Alert from 'react-bootstrap/Alert';
 import { createUser, updateUser, getUserById } from '../../services/userServices';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import ErrorDisplay from '../CommonComponents/ErrorDisplay';
 
 function UserForm() {
@@ -23,7 +25,7 @@ function UserForm() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-
+  const [showPassword, setShowPassword] = useState(false);
   const isEditMode = Boolean(id);
 
   // Fonction pour charger les données de l'utilisateur
@@ -106,8 +108,8 @@ function UserForm() {
 
     // Validation du mot de passe
     if (formData.plainPassword) {
-      if (formData.plainPassword.length < 6) {
-        setError("Le mot de passe doit contenir au moins 6 caractères.");
+      if (formData.plainPassword.length < 12) {
+        setError("Le mot de passe doit contenir au moins 12 caractères.");
         return false;
       }
       if (formData.plainPassword.length > 255) {
@@ -266,31 +268,41 @@ function UserForm() {
             </Form.Group>
 
             <Form.Group className="mb-3">
-              <Form.Label htmlFor="plainPassword">
-                Mot de passe 
-                {!isEditMode && <span className="text-danger" aria-label="obligatoire"> *</span>}
-                {isEditMode && <span className="text-muted"> (optionnel)</span>}
-              </Form.Label>
-              <Form.Control
-                id="plainPassword"
-                type="password"
-                value={formData.plainPassword}
-                onChange={(e) => handleInputChange('plainPassword', e.target.value)}
-                minLength={6}
-                maxLength={255}
-                required={!isEditMode}
-                aria-describedby="password-help"
-                aria-invalid={error && !isEditMode && !formData.plainPassword ? 'true' : 'false'}
-                disabled={submitting}
-                placeholder={isEditMode ? "Laisser vide pour ne pas modifier" : "Minimum 6 caractères"}
-              />
-              <Form.Text id="password-help" className="text-muted">
-                {isEditMode 
-                  ? "Laissez vide pour conserver le mot de passe actuel"
-                  : "Minimum 6 caractères avec au moins une minuscule, une majuscule et un chiffre"
-                }
-              </Form.Text>
-            </Form.Group>
+ <Form.Label htmlFor="plainPassword">
+   Mot de passe 
+   {!isEditMode && <span className="text-danger" aria-label="obligatoire"> *</span>}
+   {isEditMode && <span className="text-muted"> (optionnel)</span>}
+ </Form.Label>
+ <InputGroup>
+   <Form.Control
+     id="plainPassword"
+     type={showPassword ? "text" : "password"}
+     value={formData.plainPassword}
+     onChange={(e) => handleInputChange('plainPassword', e.target.value)}
+     minLength={6}
+     maxLength={255}
+     required={!isEditMode}
+     aria-describedby="password-help"
+     aria-invalid={error && !isEditMode && !formData.plainPassword ? 'true' : 'false'}
+     disabled={submitting}
+     placeholder={isEditMode ? "Laisser vide pour ne pas modifier" : "Minimum 12 caractères"}
+   />
+   <Button
+     variant="outline-secondary"
+     onClick={() => setShowPassword(!showPassword)}
+     disabled={submitting}
+     aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+   >
+     {showPassword ? <FaEyeSlash /> : <FaEye />}
+   </Button>
+ </InputGroup>
+ <Form.Text id="password-help" className="text-muted">
+   {isEditMode
+     ? "Laissez vide pour conserver le mot de passe actuel"
+     : "Minimum 12 caractères avec au moins une minuscule, une majuscule et un chiffre"
+   }
+ </Form.Text>
+</Form.Group>
 
             <Form.Group className="mb-4">
               <Form.Label htmlFor="role">
@@ -307,7 +319,7 @@ function UserForm() {
               >
                 <option value="">-- Sélectionner un rôle --</option>
                 <option value="ROLE_ADMIN">Administrateur</option>
-                <option value="ROLE_RECEPTIONNISTE">Utilisateur</option>
+                <option value="ROLE_RECEPTIONNISTE">Réceptionniste</option>
               </Form.Select>
               <Form.Text id="role-help" className="text-muted">
                 {formData.role ? (

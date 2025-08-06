@@ -23,7 +23,6 @@ import Reservations from './pages/ReservationPage';
 import ReservationForm from './components/Reservations/ResservationForm';
 /* Login */
 import LoginForm from './pages/LoginPage';
-
 function App() {
   return (
     <Router>
@@ -75,7 +74,7 @@ function App() {
         <Route 
           path="/rooms/create" 
           element={
-            <ProtectedRoute requiredRole="ROLE_ADMIN">
+            <ProtectedRoute >
             <RoomForm />
           </ProtectedRoute>
           } 

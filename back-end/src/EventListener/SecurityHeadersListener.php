@@ -20,12 +20,12 @@ class SecurityHeadersListener implements EventSubscriberInterface
     {
         $response = $event->getResponse();
         
-        // 🛡️ Headers de sécurité (sans toucher CORS)
+        // Headers de sécurité (sans toucher CORS)
         $response->headers->set('X-Content-Type-Options', 'nosniff');
         $response->headers->set('X-Frame-Options', 'SAMEORIGIN');
         $response->headers->set('Content-Security-Policy', "object-src 'none'; base-uri 'self'");
         
-        // 🔥 AJOUT: Headers CORS pour développement
+        //  AJOUT: Headers CORS pour développement
         if (!$response->headers->has('Access-Control-Allow-Origin')) {
             $response->headers->set('Access-Control-Allow-Origin', 'http://localhost:5173');
             $response->headers->set('Access-Control-Allow-Credentials', 'true');

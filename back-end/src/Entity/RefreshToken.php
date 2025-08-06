@@ -40,7 +40,7 @@ class RefreshToken
     /**
      * Enregistre le *hash* du token
      */
-    // Dans RefreshToken.php, remplacez setToken() par :
+    
     public function setToken(string $token): self
     {
         $this->token = $token; // Pas de hash automatique

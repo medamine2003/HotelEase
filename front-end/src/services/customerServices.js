@@ -1,8 +1,8 @@
 import api from './api';
-//const API_URL = 'http://localhost:8000/api/clients';
+
 
 export const createCustomer = async (customer) => {
-  console.log(" Données envoyées à l'API :", customer);
+  
   const response = await api.post('/clients', customer, {
     headers: {
       'Content-Type': 'application/ld+json',
@@ -21,7 +21,7 @@ export const getCustomers = async (params = {}) => {
         'Accept': 'application/ld+json',
       }
     });
-    return response.data.member || []; // ← CORRIGÉ : forcé array vide
+    return response.data.member || []; 
   } catch (error) {
     console.error('Erreur lors de la récupération des clients:', error);
     throw error;

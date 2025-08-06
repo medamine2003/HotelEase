@@ -22,7 +22,7 @@ const LoginForm = () => {
   
   const navigate = useNavigate();
 
-  // Timer pour le déblocage
+ 
   useEffect(() => {
     let interval;
     if (isBlocked && blockTimeRemaining > 0) {
@@ -104,7 +104,7 @@ const LoginForm = () => {
         
         let retryAfter = data?.retry_after;
         
-        // Gestion de l'objet DateTime de Symfony
+       
         if (retryAfter && typeof retryAfter === 'object' && retryAfter.date) {
           const targetTime = new Date(retryAfter.date + 'Z');
           const currentTime = new Date();
@@ -116,7 +116,7 @@ const LoginForm = () => {
         }
         
         if (!retryAfter || isNaN(retryAfter) || retryAfter <= 0) {
-          retryAfter = 15 * 60; // 15 minutes par défaut
+          retryAfter = 15 * 60; 
         }
         
         setBlockTimeRemaining(retryAfter);
@@ -153,7 +153,7 @@ const LoginForm = () => {
             <Card.Body>
               <h2 className="text-center mb-4">Connexion</h2>
 
-              {/* Message de blocage */}
+              
               {isBlocked && (
                 <Alert variant="danger" className="text-center">
                   <h6>Compte verrouillé</h6>
@@ -163,14 +163,14 @@ const LoginForm = () => {
                 </Alert>
               )}
 
-              {/* Avertissement progressif */}
+              
               {!isBlocked && attemptsMessage && (
                 <Alert variant={getProgressVariant().replace('info', 'warning')} className="text-center">
                   {attemptsMessage}
                 </Alert>
               )}
 
-              {/* Barre de progression des tentatives */}
+              
               {attemptCount > 0 && !isBlocked && (
                 <div className="mb-3">
                   <small className="text-muted">Tentatives : {attemptCount} / {maxAttempts}</small>
@@ -183,7 +183,7 @@ const LoginForm = () => {
                 </div>
               )}
 
-              {/* Erreur générale */}
+              
               {error && !isBlocked && (
                 <Alert variant="danger" className="text-center">
                   {error}
@@ -239,7 +239,7 @@ const LoginForm = () => {
                   )}
                 </Button>
 
-                {/* Info de sécurité */}
+                
                 
               </Form>
             </Card.Body>

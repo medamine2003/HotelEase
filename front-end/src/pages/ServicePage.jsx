@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import ServiceList from '../components/Services/ServicesList'
 import NavigationBar from "../components/CommonComponents/NavigationBar"
-
+import Footer from '../components/CommonComponents/Footer';
 function Services() {
   return (
     
@@ -17,6 +17,7 @@ function Services() {
         </div>
 
         <ServiceList />
+        <Footer/>
       </div> 
    
   );

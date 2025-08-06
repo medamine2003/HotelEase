@@ -15,6 +15,7 @@ front-end/package-lock.json
 back-end/.env.local
 back-end/.env.local.php
 back-end/.env.*.local
+back-end/.env 
 back-end/config/secrets/prod/prod.decrypt.private.php
 back-end/public/bundles/
 back-end/var/
@@ -27,7 +28,7 @@ back-end/config/jwt/*.pem
 # Mac / Linux / Windows system files
 .DS_Store
 Thumbs.db
-
+.env
 # Logs & autres fichiers temporaires
 *.log
 *.lock

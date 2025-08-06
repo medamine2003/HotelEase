@@ -37,21 +37,21 @@ use Symfony\Component\Validator\Constraints as Assert;
             processor: PaiementStateProcessor::class
         ),
         new Put(
-            security: "is_granted('ROLE_ADMIN')",
+            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_RECEPTIONNISTE')",
             denormalizationContext: ['groups' => ['paiement:update']],
             normalizationContext: ['groups' => ['paiement:read']],
             validationContext: ['groups' => ['Default', 'paiement:update']],
             processor: PaiementStateProcessor::class
         ),
         new Patch(
-            security: "is_granted('ROLE_ADMIN')",
+            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_RECEPTIONNISTE')",
             denormalizationContext: ['groups' => ['paiement:patch']],
             normalizationContext: ['groups' => ['paiement:read']],
             validationContext: ['groups' => ['Default', 'paiement:patch']],
             processor: PaiementStateProcessor::class
         ),
         new Delete(
-            security: "is_granted('ROLE_ADMIN')",
+            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_RECEPTIONNISTE')",
             processor: PaiementStateProcessor::class
         )
     ]

@@ -43,7 +43,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
             processor: ReservationStateProcessor::class
         ),
         new Put(
-            security: "is_granted('ROLE_ADMIN')",
+            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_RECEPTIONNISTE')",
             denormalizationContext: ['groups' => ['reservation:update']],
             normalizationContext: ['groups' => ['reservation:read']],
             validationContext: ['groups' => ['Default', 'reservation:update']],
@@ -57,7 +57,7 @@ use Symfony\Component\Serializer\Annotation\SerializedName;
             processor: ReservationStateProcessor::class
         ),
         new Delete(
-            security: "is_granted('ROLE_ADMIN')",
+            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_RECEPTIONNISTE')",
             processor: ReservationStateProcessor::class
         )
     ]

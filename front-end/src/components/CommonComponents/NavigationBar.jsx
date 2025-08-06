@@ -1,18 +1,19 @@
 // un composant d'affichage
-// ce composant représente la barre de navigation de l'application, il est appelé dans toutes les pages d'affichage 
+// ce composant représente la barre de navigation de l'application, il est appelé dans toutes les pages d'affichage
+
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import { Button } from 'react-bootstrap';
 import { 
-  FaHome, 
-  FaBed, 
-  FaUsers, 
-  FaBell, 
-  FaCreditCard, 
-  FaCalendarAlt, 
-  FaCog, 
-  FaSignOutAlt 
+  FaHome,
+  FaBed,
+  FaUsers,
+  FaBell,
+  FaCreditCard,
+  FaCalendarAlt,
+  FaCog,
+  FaSignOutAlt
 } from 'react-icons/fa';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -29,8 +30,14 @@ function NavigationBar() {
   };
 
   return (
-    <Navbar bg="dark" variant="dark" expand="lg" className="shadow-sm mb-4">
-      <Container>
+    <Navbar 
+      bg="dark" 
+      variant="dark" 
+      expand="lg" 
+      className="shadow-sm mb-4 w-100"
+      style={{ margin: 0 }}
+    >
+      <Container fluid>
         <Navbar.Brand href="/" className="fw-bold text-uppercase">
           HôtelEase
         </Navbar.Brand>

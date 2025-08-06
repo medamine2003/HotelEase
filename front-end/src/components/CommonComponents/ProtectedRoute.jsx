@@ -19,7 +19,7 @@ export function ProtectedRoute({ children, requiredRole }) {
     return (
       <Container className="mt-5">
         <Alert variant="danger">
-          <Alert.Heading>🚫 Accès refusé</Alert.Heading>
+          <Alert.Heading>Accès refusé</Alert.Heading>
           <p>
             Cette page est réservée aux <strong>
               {requiredRole === 'ROLE_ADMIN' ? 'Administrateurs' : 'Réceptionnistes'}

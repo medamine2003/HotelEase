@@ -23,7 +23,7 @@ public function me(Request $request, #[CurrentUser] ?Utilisateur $user): JsonRes
         ]);
     }
     
-    // Headers CORS manuels
+    
     $response->headers->set('Access-Control-Allow-Origin', 'http://localhost:5173');
     $response->headers->set('Access-Control-Allow-Credentials', 'true');
     

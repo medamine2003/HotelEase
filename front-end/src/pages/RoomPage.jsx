@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import RoomList from '../components/Rooms/RoomList';
 import NavigationBar from "../components/CommonComponents/NavigationBar"
-
+import Footer from '../components/CommonComponents/Footer';
 function Rooms() {
   return (
     <div className="container-fluid ">
@@ -15,6 +15,7 @@ function Rooms() {
       </div>
 
       <RoomList />
+      <Footer/>
     </div>
   );
 }

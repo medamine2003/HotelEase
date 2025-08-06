@@ -516,13 +516,6 @@ function PaymentList() {
       )}
 
       
-      <div className="mt-3 text-muted small" role="region" aria-label="Légende des types de paiements">
-        <strong>Légende :</strong>
-        {getTypeBadge('acompte')} Acompte &nbsp;
-        {getTypeBadge('solde')} Solde &nbsp;
-        {getTypeBadge('remboursement')} Remboursement
-      </div>
-
       
       <Modal 
         show={showConfirmModal} 

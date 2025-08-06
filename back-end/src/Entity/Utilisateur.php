@@ -18,6 +18,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+
 // cette entité gère la création d'un utilisateur avec des conditions de validation (appliquant une logique métier)
 // This entity is responsible for the creation of a user with some condictions
 #[ORM\Entity(repositoryClass: UtilisateurRepository::class)]
@@ -28,7 +29,7 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
         new Post(processor: UtilisateurProcessor::class),
         new Put(processor: UtilisateurProcessor::class),
         new Patch(processor: UtilisateurProcessor::class),
-        new Delete(processor: UtilisateurProcessor::class) // ← Correction ici
+        new Delete(processor: UtilisateurProcessor::class)
     ],
     normalizationContext: ['groups' => ['user:read']],
     denormalizationContext: ['groups' => ['user:write']]
@@ -43,15 +44,18 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(length: 120)]
     #[Groups(['user:read', 'user:write'])]
-    #[Assert\NotBlank]
-    #[Assert\Length(max: 120)]
+    #[Assert\NotBlank(message: "Le nom est obligatoire.")]
+    #[Assert\Length(max: 120, maxMessage: "Le nom ne doit pas dépasser {{ limit }} caractères.")]
     private ?string $nom = null;
 
     #[ORM\Column(length: 180, unique: true)]
     #[Groups(['user:read', 'user:write'])]
-    #[Assert\NotBlank]
-    #[Assert\Email]
-    #[Assert\Length(max: 180)]
+    #[Assert\NotBlank(message: "L'email est obligatoire.")]
+    #[Assert\Email(message: "Format d'email invalide.")]
+    #[Assert\Length(
+        max: 180,
+        maxMessage: "L'email ne doit pas dépasser {{ limit }} caractères."
+    )]
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
@@ -59,13 +63,28 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $motDePasse = null;
 
     #[Groups(['user:write'])]
-    #[Assert\Length(min: 6, groups: ['user:create'])]
+    #[Assert\NotBlank(message: "Le mot de passe est obligatoire.", groups: ['user:create'])]
+    #[Assert\Length(
+        min: 12,
+        max: 255,
+        minMessage: "Le mot de passe doit contenir au moins {{ limit }} caractères.",
+        maxMessage: "Le mot de passe ne doit pas dépasser {{ limit }} caractères.",
+        groups: ['user:create', 'user:update']
+    )]
+    #[Assert\Regex(
+        pattern: '/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/',
+        message: "Le mot de passe doit contenir au moins une minuscule, une majuscule et un chiffre.",
+        groups: ['user:create', 'user:update']
+    )]
     private ?string $plainPassword = null;
 
     #[ORM\Column(length: 50)]
     #[Groups(['user:read', 'user:write'])]
-    #[Assert\NotBlank]
-    #[Assert\Choice(choices: ['ROLE_ADMIN', 'ROLE_RECEPTIONNISTE'])]
+    #[Assert\NotBlank(message: "Le rôle est obligatoire.")]
+    #[Assert\Choice(
+        choices: ['ROLE_ADMIN', 'ROLE_RECEPTIONNISTE'],
+        message: "Le rôle doit être soit 'ROLE_ADMIN' soit 'ROLE_RECEPTIONNISTE'."
+    )]
     private ?string $role = null;
 
     /**
@@ -91,7 +110,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setNom(string $nom): static
     {
-        $this->nom = $nom;
+        $this->nom = trim($nom);
         return $this;
     }
 
@@ -102,7 +121,8 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function setEmail(string $email): static
     {
-        $this->email = $email;
+        // Normalisation : trim et lowercase comme en front
+        $this->email = trim(strtolower($email));
         return $this;
     }
 

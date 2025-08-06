@@ -60,7 +60,7 @@ class ActivityListener
             if ($log) {
                 $em->persist($log);
                 
-                // Important : Calculer les métadonnées pour la nouvelle entité
+                
                 $classMetadata = $em->getClassMetadata(Enregistrement::class);
                 $uow->computeChangeSet($classMetadata, $log);
             }

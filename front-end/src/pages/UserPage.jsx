@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import UserList from '../components/Users/UserList';
 import NavigationBar from "../components/CommonComponents/NavigationBar"
-
+import Footer from '../components/CommonComponents/Footer';
 function Users() {
   return (
     <div className="container-fluid ">
@@ -15,6 +15,7 @@ function Users() {
       </div>
 
       <UserList />
+      <Footer/>
     </div>
   );
 }

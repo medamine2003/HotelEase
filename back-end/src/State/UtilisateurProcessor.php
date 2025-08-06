@@ -8,7 +8,9 @@ use App\Entity\Utilisateur;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
+use Symfony\Component\HttpKernel\Exception\UnprocessableEntityHttpException;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Psr\Log\LoggerInterface;
 
 class UtilisateurProcessor implements ProcessorInterface
@@ -16,6 +18,7 @@ class UtilisateurProcessor implements ProcessorInterface
     public function __construct(
         private EntityManagerInterface $entityManager,
         private UserPasswordHasherInterface $passwordHasher,
+        private ValidatorInterface $validator,
         private Security $security,
         private LoggerInterface $logger
     ) {}
@@ -51,8 +54,14 @@ class UtilisateurProcessor implements ProcessorInterface
 
     private function handleCreate(Utilisateur $utilisateur, Operation $operation, array $uriVariables, array $context): Utilisateur
     {
-        // Validation de sécurité supplémentaire
-        $this->validateUtilisateurData($utilisateur, true);
+        // Validation Symfony avec groupe de création
+        $this->validateWithSymfonyConstraints($utilisateur, ['user:create']);
+        
+        // Validations métier spécifiques
+        $this->validateBusinessRules($utilisateur, true);
+        
+        // Sécurisation finale des données
+        $this->securizeData($utilisateur);
         
         // Vérification unicité de l'email (sécurité supplémentaire)
         if ($this->isEmailExists($utilisateur->getEmail())) {
@@ -63,10 +72,7 @@ class UtilisateurProcessor implements ProcessorInterface
             throw new BadRequestException('Un utilisateur avec cet email existe déjà');
         }
 
-        // Assainissement final des données
-        $this->sanitizeUtilisateurData($utilisateur);
-
-        // Hacher le mot de passe si présent
+        // Hash du mot de passe
         if ($utilisateur->getPlainPassword()) {
             $hashedPassword = $this->passwordHasher->hashPassword($utilisateur, $utilisateur->getPlainPassword());
             $utilisateur->setMotDePasse($hashedPassword);
@@ -77,7 +83,7 @@ class UtilisateurProcessor implements ProcessorInterface
         $this->entityManager->persist($utilisateur);
         $this->entityManager->flush();
 
-        // Log de succès avec données RGPD (sans mot de passe)
+        // Log de succès avec données RGPD
         $this->logger->info('Utilisateur créé avec succès', [
             'user_id' => $utilisateur->getId(),
             'nom' => $utilisateur->getNom(),
@@ -98,6 +104,13 @@ class UtilisateurProcessor implements ProcessorInterface
             throw new BadRequestException('Utilisateur introuvable');
         }
 
+        // Validation avec groupe de mise à jour (seulement si mot de passe fourni)
+        $validationGroups = [];
+        if ($utilisateur->getPlainPassword()) {
+            $validationGroups[] = 'user:update';
+        }
+        $this->validateWithSymfonyConstraints($utilisateur, $validationGroups);
+
         // Vérification des droits de modification
         $this->checkModificationRights($originalUtilisateur, $utilisateur);
 
@@ -112,17 +125,18 @@ class UtilisateurProcessor implements ProcessorInterface
             throw new BadRequestException('Un utilisateur avec cet email existe déjà');
         }
 
-        // Validation et assainissement
-        $this->validateUtilisateurData($utilisateur, false);
-        $this->sanitizeUtilisateurData($utilisateur);
+        // Validations métier spécifiques
+        $this->validateBusinessRules($utilisateur, false);
 
-        // Hacher le nouveau mot de passe si fourni
+        // Sécurisation finale des données
+        $this->securizeData($utilisateur);
+
+        // Gestion du mot de passe
         if ($utilisateur->getPlainPassword()) {
             $hashedPassword = $this->passwordHasher->hashPassword($utilisateur, $utilisateur->getPlainPassword());
             $utilisateur->setMotDePasse($hashedPassword);
             $utilisateur->setPlainPassword(null);
         } else {
-            // Conserver l'ancien mot de passe si pas de nouveau
             $utilisateur->setMotDePasse($originalUtilisateur->getMotDePasse());
         }
 
@@ -142,7 +156,7 @@ class UtilisateurProcessor implements ProcessorInterface
         return $this->handleUpdate($utilisateur, $operation, $uriVariables, $context);
     }
 
-    private function handleDelete(Utilisateur $utilisateur, Operation $operation, array $uriVariables, array $context): mixed
+    private function handleDelete(Utilisateur $utilisateur, Operation $operation, array $uriVariables, array $context): void
     {
         // Empêcher la suppression de son propre compte
         if ($this->security->getUser() && $this->security->getUser()->getId() === $utilisateur->getId()) {
@@ -151,6 +165,18 @@ class UtilisateurProcessor implements ProcessorInterface
                 'email' => $utilisateur->getEmail()
             ]);
             throw new BadRequestException('Vous ne pouvez pas supprimer votre propre compte');
+        }
+
+        // Vérification avant suppression - si l'utilisateur a des réservations
+        if ($this->isUtilisateurUsedInReservations($utilisateur)) {
+            $this->logger->warning('Tentative de suppression d\'utilisateur avec réservations', [
+                'user_id' => $utilisateur->getId(),
+                'nom' => $utilisateur->getNom(),
+                'email' => $utilisateur->getEmail(),
+                'reservations_count' => $utilisateur->getReservations()->count(),
+                'user_id_requesting' => $this->security->getUser()?->getId()
+            ]);
+            throw new BadRequestException('Impossible de supprimer un utilisateur ayant des réservations associées');
         }
 
         // Log avant suppression pour audit RGPD
@@ -165,76 +191,73 @@ class UtilisateurProcessor implements ProcessorInterface
         // Suppression
         $this->entityManager->remove($utilisateur);
         $this->entityManager->flush();
-
-        // ✅ CORRECTION : Retourner l'utilisateur supprimé ou null
-        return $utilisateur;
     }
 
-    private function validateUtilisateurData(Utilisateur $utilisateur, bool $isCreation = false): void
+    /**
+     * Validation avec les contraintes Symfony définies dans l'entité
+     */
+    private function validateWithSymfonyConstraints(Utilisateur $utilisateur, array $groups = []): void
     {
-        // Validations de sécurité supplémentaires
+        $violations = $this->validator->validate($utilisateur, null, $groups);
         
-        // Vérification nom
-        if (!$utilisateur->getNom() || strlen(trim($utilisateur->getNom())) < 2) {
-            throw new BadRequestException('Le nom doit contenir au moins 2 caractères');
+        if (count($violations) > 0) {
+            $errors = [];
+            foreach ($violations as $violation) {
+                $errors[] = $violation->getMessage();
+            }
+            
+            $this->logger->warning('Erreurs de validation Symfony', [
+                'errors' => $errors,
+                'user_email' => $utilisateur->getEmail(),
+                'groups' => $groups
+            ]);
+            
+            throw new UnprocessableEntityHttpException(implode(' ', $errors));
         }
-
-        if (strlen($utilisateur->getNom()) > 120) {
-            throw new BadRequestException('Le nom ne peut pas dépasser 120 caractères');
-        }
-
-        // Vérification email
-        if (!$utilisateur->getEmail() || !filter_var($utilisateur->getEmail(), FILTER_VALIDATE_EMAIL)) {
-            throw new BadRequestException('L\'email doit être valide');
-        }
-
-        if (strlen($utilisateur->getEmail()) > 180) {
-            throw new BadRequestException('L\'email ne peut pas dépasser 180 caractères');
-        }
-
-        // Vérification mot de passe pour création
-        if ($isCreation && (!$utilisateur->getPlainPassword() || strlen($utilisateur->getPlainPassword()) < 6)) {
-            throw new BadRequestException('Le mot de passe doit contenir au moins 6 caractères');
-        }
-
-        // Vérification rôle
-        $rolesAutorises = ['ROLE_ADMIN', 'ROLE_RECEPTIONNISTE'];
-        if (!$utilisateur->getRole() || !in_array($utilisateur->getRole(), $rolesAutorises, true)) {
-            throw new BadRequestException('Le rôle doit être ROLE_ADMIN ou ROLE_RECEPTIONNISTE');
-        }
-
-        // Vérification domaine email autorisé (optionnel - adaptez selon vos besoins)
-        $domainesAutorises = ['@hotelease.com', '@admin.hotelease.com']; // Exemple
-        $emailDomain = substr(strrchr($utilisateur->getEmail(), '@'), 0);
-        // Désactivé par défaut - décommentez si vous voulez restreindre les domaines
-        // if (!in_array($emailDomain, $domainesAutorises)) {
-        //     throw new BadRequestException('Domaine email non autorisé');
-        // }
     }
 
-    private function sanitizeUtilisateurData(Utilisateur $utilisateur): void
+    /**
+     * Validations métier spécifiques non couvertes par les contraintes Symfony
+     */
+    private function validateBusinessRules(Utilisateur $utilisateur, bool $isCreation = false): void
     {
-        // Assainissement supplémentaire au niveau métier
-        
-        // Normalisation du nom
-        if ($utilisateur->getNom()) {
-            $nom = trim(strip_tags($utilisateur->getNom()));
-            $nom = htmlspecialchars($nom, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-            $nom = preg_replace('/\s+/', ' ', $nom); // Espaces multiples
-            $utilisateur->setNom($nom);
+        // Vérification mot de passe obligatoire à la création
+        if ($isCreation && !$utilisateur->getPlainPassword()) {
+            throw new BadRequestException('Le mot de passe est obligatoire lors de la création');
         }
 
-        // Normalisation de l'email
+        // Vérification mots de passe trop communs (sécurité métier)
+        if ($utilisateur->getPlainPassword()) {
+            $commonPasswords = ['123456789012', 'MotDePasse123', 'Password123!', 'Azerty123456', 'HotelEase123'];
+            if (in_array($utilisateur->getPlainPassword(), $commonPasswords)) {
+                throw new BadRequestException('Ce mot de passe est trop commun, veuillez en choisir un autre');
+            }
+        }
+
+        // Vérification domaine email autorisé (règle métier optionnelle)
         if ($utilisateur->getEmail()) {
-            $email = trim(strtolower($utilisateur->getEmail()));
-            $email = filter_var($email, FILTER_SANITIZE_EMAIL);
-            $utilisateur->setEmail($email);
+            $domainesAutorises = ['@hotelease.com', '@admin.hotelease.com']; // Exemple
+            $emailDomain = substr(strrchr($utilisateur->getEmail(), '@'), 0);
+            
+             if (!in_array($emailDomain, $domainesAutorises)) {
+              throw new BadRequestException('Domaine email non autorisé pour cette application');
+             }
         }
 
-        // Normalisation du rôle
-        if ($utilisateur->getRole()) {
-            $role = strtoupper(trim($utilisateur->getRole()));
-            $utilisateur->setRole($role);
+        // Vérification mots interdits dans le nom (sécurité métier)
+        if ($utilisateur->getNom()) {
+            $motsInterdits = ['<script', 'javascript:', 'eval(', 'alert(', 'confirm(', 'prompt(', 'onload=', 'onerror='];
+            $nomLower = strtolower($utilisateur->getNom());
+            foreach ($motsInterdits as $mot) {
+                if (str_contains($nomLower, $mot)) {
+                    throw new BadRequestException('Le nom contient des termes non autorisés');
+                }
+            }
+        }
+
+        // Vérification longueur minimale nom (règle métier)
+        if ($utilisateur->getNom() && strlen(trim($utilisateur->getNom())) < 2) {
+            throw new BadRequestException('Le nom doit contenir au moins 2 caractères');
         }
     }
 
@@ -267,6 +290,11 @@ class UtilisateurProcessor implements ProcessorInterface
         }
 
         return $qb->getQuery()->getOneOrNullResult() !== null;
+    }
+
+    private function isUtilisateurUsedInReservations(Utilisateur $utilisateur): bool
+    {
+        return $utilisateur->getReservations()->count() > 0;
     }
 
     private function logUtilisateurChanges(Utilisateur $original, Utilisateur $updated): void
@@ -305,6 +333,33 @@ class UtilisateurProcessor implements ProcessorInterface
                 'reservations_count' => $updated->getReservations()->count(),
                 'modified_by' => $this->security->getUser()?->getId()
             ]);
+        }
+    }
+
+    /**
+     * Sécurisation finale des données contre XSS et autres attaques
+     */
+    private function securizeData(Utilisateur $utilisateur): void
+    {
+        // Protection XSS sur le nom
+        if ($utilisateur->getNom()) {
+            $nom = trim(strip_tags($utilisateur->getNom()));
+            $nom = htmlspecialchars($nom, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+            $nom = preg_replace('/\s+/', ' ', $nom);
+            $utilisateur->setNom($nom);
+        }
+
+        // Protection sur l'email (déjà fait dans le setter mais sécurité supplémentaire)
+        if ($utilisateur->getEmail()) {
+            $email = trim(strtolower($utilisateur->getEmail()));
+            $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+            $utilisateur->setEmail($email);
+        }
+
+        // Normalisation du rôle
+        if ($utilisateur->getRole()) {
+            $role = strtoupper(trim(strip_tags($utilisateur->getRole())));
+            $utilisateur->setRole($role);
         }
     }
 }

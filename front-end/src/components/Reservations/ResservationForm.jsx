@@ -1,10 +1,10 @@
-
-// un composant de création et de modification des résevations
-// a component that is used in the creation and modification of reservations
+// Composant de création et modification des réservations - Version responsive
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 import {
   createReservation,
   updateReservation,
@@ -36,7 +36,7 @@ function ReservationForm() {
   const [chambres, setChambres] = useState([]);
   const [utilisateurs, setUtilisateurs] = useState([]);
   const [currentUserName, setCurrentUserName] = useState('');
-  const [isLoading, setIsLoading] = useState(true); // Ajout d'un état de chargement
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const loadData = async () => {
@@ -64,9 +64,6 @@ function ReservationForm() {
         // Si mode édition, charger la réservation
         if (id) {
           const reservationData = await getReservationById(id);
-          
-          // DEBUG: Afficher les données récupérées
-        
           
           // Fonction helper pour formater les dates
           const formatDateForInput = (dateString) => {
@@ -109,7 +106,6 @@ function ReservationForm() {
             createur: (reservationData.createur && reservationData.createur['@id']) || userApiPath
           };
 
-          
           setFormData(formattedData);
         } else {
           // Mode création : définir seulement le créateur
@@ -182,49 +178,45 @@ function ReservationForm() {
     return true;
   };
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!validateForm()) return;
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
 
-  try {
-    
+    try {
+      const payload = {
+        dateDebut: formData.dateDebut,
+        dateFin: formData.dateFin,
+        statut: formData.statut,
+        montantBase: parseFloat(formData.montantBase).toFixed(2),
+        client: formData.client,
+        chambre: formData.chambre,    
+        createur: formData.createur   
+      };
 
-    const payload = {
-  dateDebut: formData.dateDebut,
-  dateFin: formData.dateFin,
-  statut: formData.statut,
-  montantBase: parseFloat(formData.montantBase).toFixed(2),
-  client: formData.client,
-  chambre: formData.chambre,    
-  createur: formData.createur   
-};
-
-    
-
-    if (id) {
-      await updateReservation(id, payload);
-    } else {
-      await createReservation(payload);
+      if (id) {
+        await updateReservation(id, payload);
+      } else {
+        await createReservation(payload);
+      }
+      navigate('/reservations');
+    } catch (error) {
+      console.error('Erreur complète:', error.response);
+      setError(`Erreur lors de l'enregistrement: ${error.response?.data?.message || error.message}`);
     }
-    navigate('/reservations');
-  } catch (error) {
-    console.error('Erreur complète:', error.response);
-    setError(`Erreur lors de l'enregistrement: ${error.response?.data?.message || error.message}`);
-  }
-};
+  };
 
   // Fonction helper pour mettre à jour le formData de manière sûre
   const updateFormData = (field, value) => {
     setFormData(prev => ({
       ...prev,
-      [field]: value || '' // S'assurer qu'on ne passe jamais undefined
+      [field]: value || ''
     }));
   };
 
   // Afficher un loader pendant le chargement
   if (isLoading) {
     return (
-      <div className="container mt-4">
+      <div className="container-fluid px-3 mt-4">
         <div className="text-center">
           <div className="spinner-border" role="status">
             <span className="visually-hidden">Chargement...</span>
@@ -235,158 +227,194 @@ function ReservationForm() {
   }
 
   return (
-    <div className="container mt-4">
-      <h1 className="h2">{id ? 'Modifier une réservation' : 'Créer une réservation'}</h1>
-      
-      <ErrorDisplay 
-        error={error}
-        onDismiss={() => setError(null)}
-        title={id? "Erreur lors de la modification de la réservation" : "Erreur lors de la création de la réservation"}
-      />
-      
-      <Link 
-        to='/reservations'
-        className="btn btn-outline-secondary mb-3"
-      >
-        ← Retour à la liste des réservations
-      </Link>
-
-      <Form onSubmit={handleSubmit}>
-        <Form.Group className="mb-3">
-          <Form.Label htmlFor="dateDebut">Date de début *</Form.Label>
-          <Form.Control
-            id="dateDebut"
-            type="datetime-local"
-            value={formData.dateDebut || ''} // Protection contre undefined
-            onChange={(e) => updateFormData('dateDebut', e.target.value)}
-            required
-          />
-          <Form.Text className="text-muted">
-            Date et heure d'arrivée
-          </Form.Text>
-        </Form.Group>
-
-        <Form.Group className="mb-3">
-          <Form.Label htmlFor="dateFin">Date de fin *</Form.Label>
-          <Form.Control
-            id="dateFin"
-            type="datetime-local"
-            value={formData.dateFin || ''} // Protection contre undefined
-            onChange={(e) => updateFormData('dateFin', e.target.value)}
-            required
-          />
-          <Form.Text className="text-muted">
-            Date et heure de départ (doit être après l'arrivée)
-          </Form.Text>
-        </Form.Group>
-
-        <Form.Group className="mb-3">
-          <Form.Label htmlFor="statut">Statut *</Form.Label>
-          <Form.Select
-            id="statut"
-            value={formData.statut || ''} // Protection contre undefined
-            onChange={(e) => updateFormData('statut', e.target.value)}
-            required
-          >
-            <option value="">-- Sélectionner un statut --</option>
-            <option value="en_attente">En attente de confirmation</option>
-            <option value="confirmee">Confirmée</option>
-            <option value="en_cours">En cours (client présent)</option>
-            <option value="terminee">Terminée</option>
-            <option value="annulee">Annulée</option>
-          </Form.Select> 
-        </Form.Group>
-
-        <Form.Group className="mb-3">
-          <Form.Label htmlFor="montantBase">Montant Chambre(€) *</Form.Label>
-          <Form.Control
-            id="montantBase"
-            type="number"
-            step="0.01"
-            min="0.01"
-            value={formData.montantBase || ''} // Protection contre undefined
-            onChange={(e) => updateFormData('montantBase', e.target.value)}
-            onInvalid={(e) => e.target.setCustomValidity('Le montant doit être supérieur ou égal à 0,01 €')}
-            onInput={(e) => e.target.setCustomValidity('')}
-            required
-          />
-          <Form.Text className="text-muted">
-            Montant minimum : 0,01 €
-          </Form.Text>
-        </Form.Group>
-
-        <Form.Group className="mb-3">
-          <Form.Label htmlFor="client">Client *</Form.Label>
-          <Form.Select
-            id="client"
-            value={formData.client || ''} // Protection contre undefined
-            onChange={(e) => updateFormData('client', e.target.value)}
-            required
-          >
-            <option value="">-- Sélectionner un client --</option>
-            {clients.map((c) => (
-              <option key={c.id} value={`/api/clients/${c.id}`}>
-                {c.nom} {c.prenom}
-              </option>
-            ))}
-          </Form.Select>
-        </Form.Group>
-
-        <Form.Group className="mb-3">
-          <Form.Label htmlFor="chambre">Chambre *</Form.Label>
-          <Form.Select
-            id="chambre"
-            value={formData.chambre || ''} // Protection contre undefined
-            onChange={(e) => updateFormData('chambre', e.target.value)}
-            required
-          >
-            <option value="">-- Sélectionner une chambre --</option>
-            {chambres.filter(c => c.etat === 'disponible')
-            .map((c) => (
-              <option key={c.id} value={`/api/chambres/${c.id}`}>
-                Chambre #{c.numero} - {c.type} ({c.capacite} pers)
-              </option>
-            ))}
-          </Form.Select>
-        </Form.Group>
-
-        <Form.Group className="mb-3">
-          <Form.Label htmlFor="createur">Créateur</Form.Label>
-          <Form.Control
-            id="createur"
-            type="text"
-            value={currentUserName || 'Chargement...'}
-            disabled
-            className="bg-light"
-          />
-          <Form.Text className="text-muted">
-            Utilisateur connecté (automatique)
-          </Form.Text>
-          <input type="hidden" name="createur" value={formData.createur || ''} />
-        </Form.Group>
-
-        <div className="mb-3">
-          <Form.Text className="text-muted">
-            <strong>* Champs obligatoires</strong> • Durée minimum : 1 jour
-          </Form.Text>
-        </div>
-
-        <div className="d-flex gap-2">
-          <Button variant="primary" type="submit">
-            {id ? 'Mettre à jour' : 'Créer'}
-          </Button>
+    <div className="container-fluid px-3 mt-4">
+      <Row>
+        <Col xs={12} lg={8} xl={6} className="mx-auto">
+          <h1 className="h2 mb-4">{id ? 'Modifier une réservation' : 'Créer une réservation'}</h1>
           
-          {id && (
-            <Link 
-              to={`/payments/nouveau?reservation=${id}`}
-              className="btn btn-success"
-              aria-label="Ajouter un paiement pour cette réservation"
-            >
-              💳 Ajouter un paiement
-            </Link>
-          )}
-        </div>
-      </Form>
+          <ErrorDisplay 
+            error={error}
+            onDismiss={() => setError(null)}
+            title={id? "Erreur lors de la modification de la réservation" : "Erreur lors de la création de la réservation"}
+          />
+          
+          <Link 
+            to='/reservations'
+            className="btn btn-outline-secondary mb-3 btn-sm"
+          >
+            ← Retour à la liste
+          </Link>
+
+          <Form onSubmit={handleSubmit}>
+            {/* Dates sur une ligne sur desktop, séparées sur mobile */}
+            <Row className="mb-3">
+              <Col xs={12} md={6} className="mb-3 mb-md-0">
+                <Form.Group>
+                  <Form.Label htmlFor="dateDebut">Date de début *</Form.Label>
+                  <Form.Control
+                    id="dateDebut"
+                    type="datetime-local"
+                    value={formData.dateDebut || ''}
+                    onChange={(e) => updateFormData('dateDebut', e.target.value)}
+                    required
+                    className="w-100"
+                    style={{ minWidth: '0' }} // Important pour éviter les débordements
+                  />
+                  <Form.Text className="text-muted small">
+                    Date et heure d'arrivée
+                  </Form.Text>
+                </Form.Group>
+              </Col>
+              
+              <Col xs={12} md={6}>
+                <Form.Group>
+                  <Form.Label htmlFor="dateFin">Date de fin *</Form.Label>
+                  <Form.Control
+                    id="dateFin"
+                    type="datetime-local"
+                    value={formData.dateFin || ''}
+                    onChange={(e) => updateFormData('dateFin', e.target.value)}
+                    required
+                    className="w-100"
+                    style={{ minWidth: '0' }}
+                  />
+                  <Form.Text className="text-muted small">
+                    Date et heure de départ
+                  </Form.Text>
+                </Form.Group>
+              </Col>
+            </Row>
+
+            {/* Statut et Montant sur une ligne sur desktop */}
+            <Row className="mb-3">
+              <Col xs={12} md={6} className="mb-3 mb-md-0">
+                <Form.Group>
+                  <Form.Label htmlFor="statut">Statut *</Form.Label>
+                  <Form.Select
+                    id="statut"
+                    value={formData.statut || ''}
+                    onChange={(e) => updateFormData('statut', e.target.value)}
+                    required
+                    className="w-100"
+                    style={{ minWidth: '0' }}
+                  >
+                    <option value="">-- Sélectionner --</option>
+                    <option value="en_attente">En attente</option>
+                    <option value="confirmee">Confirmée</option>
+                    <option value="en_cours">En cours</option>
+                    <option value="terminee">Terminée</option>
+                    <option value="annulee">Annulée</option>
+                  </Form.Select>
+                </Form.Group>
+              </Col>
+              
+              <Col xs={12} md={6}>
+                <Form.Group>
+                  <Form.Label htmlFor="montantBase">Montant (€) *</Form.Label>
+                  <Form.Control
+                    id="montantBase"
+                    type="number"
+                    step="0.01"
+                    min="0.01"
+                    value={formData.montantBase || ''}
+                    onChange={(e) => updateFormData('montantBase', e.target.value)}
+                    onInvalid={(e) => e.target.setCustomValidity('Le montant doit être supérieur ou égal à 0,01 €')}
+                    onInput={(e) => e.target.setCustomValidity('')}
+                    required
+                    className="w-100"
+                    style={{ minWidth: '0' }}
+                  />
+                  <Form.Text className="text-muted small">
+                    Minimum : 0,01 €
+                  </Form.Text>
+                </Form.Group>
+              </Col>
+            </Row>
+
+            {/* Client et Chambre */}
+            <Form.Group className="mb-3">
+              <Form.Label htmlFor="client">Client *</Form.Label>
+              <Form.Select
+                id="client"
+                value={formData.client || ''}
+                onChange={(e) => updateFormData('client', e.target.value)}
+                required
+                className="w-100"
+                style={{ minWidth: '0' }}
+              >
+                <option value="">-- Sélectionner un client --</option>
+                {clients.map((c) => (
+                  <option key={c.id} value={`/api/clients/${c.id}`}>
+                    {c.nom} {c.prenom}
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label htmlFor="chambre">Chambre *</Form.Label>
+              <Form.Select
+                id="chambre"
+                value={formData.chambre || ''}
+                onChange={(e) => updateFormData('chambre', e.target.value)}
+                required
+                className="w-100"
+                style={{ minWidth: '0' }}
+              >
+                <option value="">-- Sélectionner une chambre --</option>
+                {chambres.filter(c => c.etat === 'disponible')
+                .map((c) => (
+                  <option key={c.id} value={`/api/chambres/${c.id}`}>
+                    #{c.numero} - {c.type} ({c.capacite}p)
+                  </option>
+                ))}
+              </Form.Select>
+            </Form.Group>
+
+            <Form.Group className="mb-3">
+              <Form.Label htmlFor="createur">Créateur</Form.Label>
+              <Form.Control
+                id="createur"
+                type="text"
+                value={currentUserName || 'Chargement...'}
+                disabled
+                className="bg-light w-100"
+                style={{ 
+                  minWidth: '0',
+                  fontSize: '0.9rem' // Texte plus petit pour éviter les débordements
+                }}
+              />
+              <Form.Text className="text-muted small">
+                Utilisateur connecté (automatique)
+              </Form.Text>
+              <input type="hidden" name="createur" value={formData.createur || ''} />
+            </Form.Group>
+
+            <div className="mb-4">
+              <Form.Text className="text-muted small">
+                <strong>* Champs obligatoires</strong> • Durée minimum : 1 jour
+              </Form.Text>
+            </div>
+
+            {/* Boutons responsive */}
+            <div className="d-flex flex-column flex-sm-row gap-2 mb-4">
+              <Button variant="primary" type="submit" className="flex-grow-1">
+                {id ? 'Mettre à jour' : 'Créer'}
+              </Button>
+              
+              {id && (
+                <Link 
+                  to={`/payments/nouveau?reservation=${id}`}
+                  className="btn btn-success flex-grow-1 text-center"
+                  aria-label="Ajouter un paiement pour cette réservation"
+                >
+                  💳 Ajouter paiement
+                </Link>
+              )}
+            </div>
+          </Form>
+        </Col>
+      </Row>
     </div>
   );
 }

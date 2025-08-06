@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import PaymentList from '../components/Payments/PaymentList';
 import NavigationBar from "../components/CommonComponents/NavigationBar"
-
+import Footer from '../components/CommonComponents/Footer';
 function Payments() {
   return (
     <div className="container-fluid ">
@@ -15,6 +15,7 @@ function Payments() {
       </div>
 
       <PaymentList />
+      <Footer/>
     </div>
   );
 }

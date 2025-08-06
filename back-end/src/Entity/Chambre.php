@@ -33,14 +33,14 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
             normalizationContext: ['groups' => ['chambre:read']]
         ),
         new Post(
-            security: "is_granted('ROLE_ADMIN')",
+            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_RECEPTIONNISTE') " ,
             denormalizationContext: ['groups' => ['chambre:create']],
             normalizationContext: ['groups' => ['chambre:read']],
             validationContext: ['groups' => ['Default', 'chambre:create']],
             processor: ChambreStateProcessor::class
         ),
         new Put(
-            security: "is_granted('ROLE_ADMIN')",
+            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_RECEPTIONNISTE') ",
             denormalizationContext: ['groups' => ['chambre:update']],
             normalizationContext: ['groups' => ['chambre:read']],
             validationContext: ['groups' => ['Default', 'chambre:update']],
@@ -54,7 +54,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
             processor: ChambreStateProcessor::class
         ),
         new Delete(
-            security: "is_granted('ROLE_ADMIN')",
+            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_RECEPTIONNISTE')",
             processor: ChambreStateProcessor::class
         )
     ]

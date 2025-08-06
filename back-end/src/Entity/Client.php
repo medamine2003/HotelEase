@@ -39,7 +39,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
             processor: ClientStateProcessor::class
         ),
         new Put(
-            security: "is_granted('ROLE_ADMIN')",
+            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_RECEPTIONNISTE')",
             denormalizationContext: ['groups' => ['client:write']],
             normalizationContext: ['groups' => ['client:read']],
             processor: ClientStateProcessor::class
@@ -51,7 +51,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
             processor: ClientStateProcessor::class
         ),
         new Delete(
-            security: "is_granted('ROLE_ADMIN')",
+            security: "is_granted('ROLE_ADMIN') or is_granted('ROLE_RECEPTIONNISTE')",
             processor: ClientStateProcessor::class
         )
     ]
