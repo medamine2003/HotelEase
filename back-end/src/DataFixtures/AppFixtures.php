@@ -8,20 +8,28 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
-
     public function __construct(
         private UserPasswordHasherInterface $passwordHasher
     ) {}
 
     public function load(ObjectManager $manager): void
     {
+        // Utilisateur Admin
+        $admin = new \App\Entity\Utilisateur();
+        $admin->setNom('Admin User');
+        $admin->setEmail('admin@hotelease.com');
+        $admin->setMotDePasse($this->passwordHasher->hashPassword($admin, 'Password123*'));
+        $admin->setRole('ROLE_ADMIN'); // ✅ Correct - juste la string
+        $manager->persist($admin);
 
-        $utilisateur = new \App\Entity\Utilisateur();
-        $utilisateur->setNom('Test User');
-        $utilisateur->setEmail('test@example.com');
-        $utilisateur->setMotDePasse($this->passwordHasher->hashPassword($utilisateur, 'AdminEase2025*'));
-        $utilisateur->setRole("['ROLE_ADMIN']");
-        $manager->persist($utilisateur);
+        // Utilisateur Réceptionniste
+        $receptionniste = new \App\Entity\Utilisateur();
+        $receptionniste->setNom('Receptionniste User');
+        $receptionniste->setEmail('receptionniste@hotelease.com');
+        $receptionniste->setMotDePasse($this->passwordHasher->hashPassword($receptionniste, 'Password123*'));
+        $receptionniste->setRole('ROLE_RECEPTIONNISTE'); // ✅ Correct
+        $manager->persist($receptionniste);
+
         $manager->flush();
     }
 }
