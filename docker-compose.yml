@@ -22,7 +22,7 @@ services:
 
   # Backend Symfony
   backend:
-    image: mohamedamine2003/hotelease-backend
+    image: mohamedamine2003/hotelease-backend:latest
     container_name: hotelease_backend_container
     ports:
       - "8000:80"  # Port Symfony (pas 80)
