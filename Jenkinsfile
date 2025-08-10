@@ -21,22 +21,22 @@ pipeline {
                 stage('Backend CI') {
                     steps {
                         dir('back-end') {
-                            echo '📦 Simulation: composer install --no-dev --optimize-autoloader'
-                            echo '🗄️ Simulation: php bin/console doctrine:database:create --env=test'
-                            echo '🏗️ Simulation: php bin/console doctrine:schema:create --env=test'
-                            echo '📊 Simulation: php bin/console doctrine:fixtures:load --env=test'
-                            echo '🧪 Simulation: php bin/phpunit'
-                            echo '✅ Backend CI - Tests passés avec succès!'
+                            echo 'Simulation: composer install --no-dev --optimize-autoloader'
+                            echo 'Simulation: php bin/console doctrine:database:create --env=test'
+                            echo 'Simulation: php bin/console doctrine:schema:create --env=test'
+                            echo 'Simulation: php bin/console doctrine:fixtures:load --env=test'
+                            echo 'Simulation: php bin/phpunit'
+                            echo 'Backend CI - Tests passed successfully!'
                         }
                     }
                 }
                 stage('Frontend CI') {
                     steps {
                         dir('front-end') {
-                            echo '📦 Simulation: npm install'
-                            echo '🧪 Simulation: npm run test --watchAll=false'
-                            echo '🏗️ Simulation: npm run build'
-                            echo '✅ Frontend CI - Tests passés avec succès!'
+                            echo 'Simulation: npm install'
+                            echo 'Simulation: npm run test --watchAll=false'
+                            echo 'Simulation: npm run build'
+                            echo 'Frontend CI - Tests passed successfully!'
                         }
                     }
                 }
@@ -48,18 +48,18 @@ pipeline {
                 stage('Build Backend') {
                     steps {
                         dir('back-end') {
-                            echo '🐳 Simulation: docker build backend image'
-                            echo "📤 Simulation: docker push ${DOCKERHUB_USERNAME}/hotelease-backend:latest"
-                            echo '✅ Backend image buildée et poussée!'
+                            echo 'Simulation: docker build backend image'
+                            echo 'Simulation: docker push mohamedamine2003/hotelease-backend:latest'
+                            echo 'Backend image built and pushed successfully!'
                         }
                     }
                 }
                 stage('Build Frontend') {
                     steps {
                         dir('front-end') {
-                            echo '🐳 Simulation: docker build frontend image'
-                            echo "📤 Simulation: docker push ${DOCKERHUB_USERNAME}/hotelease-frontend:latest"
-                            echo '✅ Frontend image buildée et poussée!'
+                            echo 'Simulation: docker build frontend image'
+                            echo 'Simulation: docker push mohamedamine2003/hotelease-frontend:latest'
+                            echo 'Frontend image built and pushed successfully!'
                         }
                     }
                 }
@@ -68,32 +68,32 @@ pipeline {
         
         stage('Continuous Deployment') {
             steps {
-                echo '🔗 Test de connexion SSH au serveur de production...'
+                echo 'Testing SSH connection to production server...'
                 sh '''
                     sshpass -p ${SERVER_PASSWORD} ssh -o StrictHostKeyChecking=no ${SERVER_USERNAME}@${SERVER_IP} \
-                    "echo '✅ Connexion SSH réussie au serveur de production - IP: ${SERVER_IP}'"
+                    "echo 'SSH connection successful to production server - IP: ${SERVER_IP}'"
                 '''
-                echo '📋 Simulation des étapes de déploiement :'
-                echo '   1. ⬇️ Pull des nouvelles images Docker'
-                echo '   2. 🔄 Redémarrage des conteneurs'
-                echo '   3. 🗄️ Migration automatique de la base de données'
-                echo '   4. ✅ Application déployée avec succès!'
+                echo 'Deployment steps simulation:'
+                echo '   1. Pull new Docker images'
+                echo '   2. Restart containers'
+                echo '   3. Run database migrations'
+                echo '   4. Application deployed successfully!'
             }
         }
     }
     
     post {
         always {
-            echo '🧹 Nettoyage des ressources temporaires...'
+            echo 'Cleaning up temporary resources...'
             sh 'docker system prune -f'
         }
         success {
-            echo '🎉 Pipeline exécuté avec succès!'
-            echo "📱 Application disponible sur : http://${SERVER_IP}:5173"
-            echo "🔧 API Backend disponible sur : http://${SERVER_IP}:8000"
+            echo 'Pipeline executed successfully!'
+            echo "Application available at: http://${SERVER_IP}:5173"
+            echo "Backend API available at: http://${SERVER_IP}:8000"
         }
         failure {
-            echo '❌ Échec du pipeline. Vérifiez les logs ci-dessus.'
+            echo 'Pipeline failed. Check logs above.'
         }
     }
 }
