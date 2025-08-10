@@ -17,7 +17,7 @@ pipeline {
                         git branch: "main", url: "${REPO_URL}"
                         dir('back-end') {
                             sh 'composer install --no-dev --optimize-autoloader'
-                            // Tests backend avec une base de données de test SQLite
+                            // Tests backend avec SQLite
                             sh 'php bin/console doctrine:database:create --env=test --if-not-exists'
                             sh 'php bin/console doctrine:schema:create --env=test'
                             sh 'php bin/console doctrine:fixtures:load --env=test --no-interaction'
@@ -65,13 +65,14 @@ pipeline {
             steps {
                 sh '''
                     sshpass -p ${SERVER_PASSWORD} ssh -o StrictHostKeyChecking=no ${SERVER_USERNAME}@${SERVER_IP} \
-                    "cd /root && \
-                    curl -O https://raw.githubusercontent.com/medamine2003/HotelEase/main/docker-compose.yml && \
-                    curl -O https://raw.githubusercontent.com/medamine2003/HotelEase/main/back-end/.env.prod && \
-                    mkdir -p back-end && mv .env.prod back-end/ && \
-                    docker compose -p hotelease pull && \
-                    docker compose -p hotelease up -d && \
-                    docker compose -p hotelease exec -T backend php bin/console doctrine:migrations:migrate --no-interaction"
+                    "echo 'Connexion SSH réussie au serveur de production'"
+                    # cd /root && \
+                    # curl -O https://raw.githubusercontent.com/medamine2003/HotelEase/main/docker-compose.yml && \
+                    # curl -O https://raw.githubusercontent.com/medamine2003/HotelEase/main/back-end/.env.prod && \
+                    # mkdir -p back-end && mv .env.prod back-end/ && \
+                    # docker compose -p hotelease pull && \
+                    # docker compose -p hotelease up -d && \
+                    # docker compose -p hotelease exec -T backend php bin/console doctrine:migrations:migrate --no-interaction
                 '''
             }
         }
