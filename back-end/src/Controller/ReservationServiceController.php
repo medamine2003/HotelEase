@@ -50,7 +50,7 @@ class ReservationServiceController extends AbstractController
                 return $this->json(['error' => 'Service non trouvé'], Response::HTTP_NOT_FOUND);
             }
 
-            // Vérifier si le service n'est pas déjà ajouté
+            
             if ($reservation->hasService($service)) {
                 return $this->json(['error' => 'Ce service est déjà ajouté à la réservation'], Response::HTTP_CONFLICT);
             }
@@ -67,7 +67,7 @@ class ReservationServiceController extends AbstractController
             // Figer le prix au moment de l'ajout
             $reservationService->setPrixUnitaire($service->getPrixService());
 
-            // Persister
+          
             $this->entityManager->persist($reservationService);
             $this->entityManager->flush();
 
@@ -104,7 +104,7 @@ class ReservationServiceController extends AbstractController
         int $serviceId
     ): JsonResponse {
         try {
-            // Vérifier que la réservation existe
+            
             $reservation = $this->reservationRepository->find($reservationId);
             if (!$reservation) {
                 return $this->json(['error' => 'Réservation non trouvée'], Response::HTTP_NOT_FOUND);

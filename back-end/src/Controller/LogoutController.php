@@ -20,7 +20,7 @@ class LogoutController extends AbstractController
         
 
 
-        // Supprimer JWT cookie avec EXACTEMENT les mêmes paramètres que j'ai lors de la création 
+        // Supprime JWT cookie 
         $expiredJwtCookie = Cookie::create('jwt_token')
             ->withValue('')
             ->withHttpOnly(true)
@@ -29,7 +29,7 @@ class LogoutController extends AbstractController
             ->withPath('/')
             ->withExpires(new \DateTimeImmutable('-1 day'));
 
-        // Supprimer refresh token cookie
+        // Supprime refresh token cookie
         $expiredRefreshCookie = Cookie::create('refresh_token')
             ->withValue('')
             ->withHttpOnly(true)

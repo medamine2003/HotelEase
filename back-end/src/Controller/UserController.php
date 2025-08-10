@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request; 
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\CurrentUser;
-// ce controller détecte s'il y a un utilisateur connecté si oui il affiche directement la page souhaitée si non il affiche une erreur et raffiche donc la page de connexion /login
+// ce controller détecte s'il y a un utilisateur connecté si oui il affiche directement la page souhaitée si non il affiche une erreur et ré-affiche donc la page de connexion /login
 class UserController extends AbstractController
 {
 #[Route('/api/me', name: 'api_me', methods: ['GET'])]

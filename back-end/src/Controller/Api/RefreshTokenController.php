@@ -66,7 +66,7 @@ class RefreshTokenController extends AbstractController
                 ->withExpires(time() + 7 * 24 * 3600)
         );
 
-        // ✅ AJOUTER CES HEADERS CORS
+        //HEADERS CORS
         $response->headers->set('Access-Control-Allow-Origin', 'http://localhost:5173');
         $response->headers->set('Access-Control-Allow-Credentials', 'true');
 

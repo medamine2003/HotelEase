@@ -7,7 +7,7 @@ lexik_jwt_authentication:
     # Configuration des extracteurs de token
     token_extractors:
         authorization_header:
-            enabled: false  # Désactive l'extraction depuis le header Authorization
+            enabled: false 
         cookie:
-            enabled: true   # Active l'extraction depuis un cookie
-            name: jwt_token # Nom du cookie à lire
+            enabled: true  
+            name: jwt_token 

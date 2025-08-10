@@ -189,7 +189,7 @@ class ServiceStateProcessor implements ProcessorInterface
         if ($service->getNom()) {
             $nom = trim(strip_tags($service->getNom()));
             $nom = htmlspecialchars($nom, ENT_QUOTES | ENT_HTML5, 'UTF-8');
-            $nom = preg_replace('/\s+/', ' ', $nom); // Espaces multiples
+            $nom = preg_replace('/\s+/', ' ', $nom); 
             $service->setNom($nom);
         }
 

@@ -38,11 +38,9 @@ security:
         - { path: ^/api/login$, roles: PUBLIC_ACCESS }
         - { path: ^/api/token/refresh$, roles: PUBLIC_ACCESS }
 
-        # Gestion fine des roles  :
-        # Gestion utilisateurs = Admin uniquement
         - { path: ^/api/utilisateurs, roles: ROLE_ADMIN }
 
-        # TOUT LE RESTE : Admin + Réceptionniste peuvent tout faire
+    
         - { path: ^/api/chambres, roles: [ROLE_ADMIN, ROLE_RECEPTIONNISTE] }
         - { path: ^/api/clients, roles: [ROLE_ADMIN, ROLE_RECEPTIONNISTE] }
         - { path: ^/api/reservations, roles: [ROLE_ADMIN, ROLE_RECEPTIONNISTE] }

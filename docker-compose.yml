@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   # Base de données MariaDB
   database:
@@ -25,7 +23,7 @@ services:
     image: mohamedamine2003/hotelease-backend:latest
     container_name: hotelease_backend_container
     ports:
-      - "8000:80"  # Port Symfony (pas 80)
+      - "8000:80"  
     env_file:
       - ./back-end/.env.prod
     depends_on:
@@ -39,7 +37,7 @@ services:
     image: mohamedamine2003/hotelease-frontend
     container_name: hotelease_frontend_container
     ports:
-      - "5173:5173"  # Port Vite comme vous voulez
+      - "5173:5173"  
     depends_on:
       - backend
     networks:
