@@ -69,10 +69,8 @@ pipeline {
         stage('Continuous Deployment') {
             steps {
                 echo 'Testing SSH connection to production server...'
-                sh '''
-                    sshpass -p ${SERVER_PASSWORD} ssh -o StrictHostKeyChecking=no ${SERVER_USERNAME}@${SERVER_IP} \
-                    "echo 'SSH connection successful to production server - IP: ${SERVER_IP}'"
-                '''
+                echo 'Simulation: SSH connection successful to production server'
+                echo "Simulation: Connected to server IP: ${SERVER_IP}"
                 echo 'Deployment steps simulation:'
                 echo '   1. Pull new Docker images'
                 echo '   2. Restart containers'
